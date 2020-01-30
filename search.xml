@@ -3,7 +3,8 @@
   <entry>
     <title>1 计算机基本结构</title>
     <url>/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<p>本章将介绍计算机的硬件方面的基本概念，为未来的学习打好基础。</p>
+    <content><![CDATA[<p>本章将介绍计算机的硬件方面的基本概念以及对冯·诺依曼体系结构的介绍，为未来的学习打好基础。</p>
+<hr>
 <a id="more"></a>
 
 <h2 id="计算机的基本硬件组成"><a href="#计算机的基本硬件组成" class="headerlink" title="计算机的基本硬件组成"></a>计算机的基本硬件组成</h2><ol>
@@ -14,7 +15,7 @@
 </ol>
 <h2 id="冯·诺依曼体系结构"><a href="#冯·诺依曼体系结构" class="headerlink" title="冯·诺依曼体系结构"></a>冯·诺依曼体系结构</h2><p>1945年，冯·诺伊曼基于当时在秘密开发的<strong>EDVAC</strong>（Electronic Discrete Variable Automatic Computer），以<a href="https://ieeexplore.ieee.org/document/238389" target="_blank" rel="noopener">「First Draft of a Report on the EDVAC」</a>为题，起草了长达101页的总结报告，发表了全新的「存储程序通用电子计算机方案」。</p>
 <h3 id="冯·诺依曼体系结构的主要思想"><a href="#冯·诺依曼体系结构的主要思想" class="headerlink" title="冯·诺依曼体系结构的主要思想"></a>冯·诺依曼体系结构的主要思想</h3><ol>
-<li><p>计算机应由运算器、控制器、存储器、输入设备和输出设备<br>五个基本部件组成。</p>
+<li><p>计算机应由运算器、控制器、存储器、输入设备和输出设备五个基本部件组成。</p>
 </li>
 <li><p>各基本部件的功能是：</p>
 <ul>
@@ -31,7 +32,7 @@
 <li><p>内部以<strong>二进制表示</strong>指令和数据。每条指令由操作码和地址码两部分组成。操作码指出操作类型，地址码指出操作数的地址。由一串指令组成程序。</p>
 </li>
 <li><p>采用<strong>存储程序</strong>工作方式。 </p>
- 
+<img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/1.jpeg" class="" title="冯·诺依曼体系结构示意图"> 
 
 </li>
 </ol>
@@ -59,6 +60,12 @@
 <img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/2.png" class="" title="计算机结构的简化模型"> 
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章讲了计算机的基本硬件组成、冯·诺依曼体系结构、计算机执行指令的过程。下一章将介绍指令与运算，会涉及简单的汇编语言。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="http://www.chinesemooc.org/mooc/4392" target="_blank" rel="noopener">陆俊林 - 计算机组成</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
+<li><a href="https://www.icourse163.org/course/NJU-1001625001" target="_blank" rel="noopener">袁春风 - 计算机系统基础(一)：程序的表示、转换与链接</a></li>
+<li><a href="https://ieeexplore.ieee.org/document/238389" target="_blank" rel="noopener">J. von Neumann - First Draft of a Report on the EDVAC</a></li>
+</ol>
 ]]></content>
       <categories>
         <category>计算机</category>
