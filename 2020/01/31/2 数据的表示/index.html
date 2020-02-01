@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"default"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。 上一章我们介绍了计算机的基本硬件组成，让我们对计算机大致有一个了解。 这一章会为大家介绍计算机中信息的表示，有些也是之前学到的，比如二进制的计算。将重点介绍无符号（unsigned）、带符号、浮点数（floating-point）这三种编码方式。 当然溢出和浮点数特殊的">
+<meta name="keywords" content="计算机,组成原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2 信息的表示与处理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;31&#x2F;2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA&#x2F;index.html">
+<meta property="og:site_name" content="吸口好时光">
+<meta property="og:description" content="本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。 上一章我们介绍了计算机的基本硬件组成，让我们对计算机大致有一个了解。 这一章会为大家介绍计算机中信息的表示，有些也是之前学到的，比如二进制的计算。将重点介绍无符号（unsigned）、带符号、浮点数（floating-point）这三种编码方式。 当然溢出和浮点数特殊的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;31&#x2F;2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA&#x2F;1.jpg">
+<meta property="og:updated_time" content="2020-02-01T06:17:03.849Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;31&#x2F;2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA&#x2F;1.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2 信息的表示与处理 | 吸口好时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="吸口好时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">吸口好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">读书观影写字</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Brikarl">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="吸口好时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2 信息的表示与处理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-31 13:53:53" itemprop="dateCreated datePublished" datetime="2020-01-31T13:53:53+08:00">2020-01-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-01 14:17:03" itemprop="dateModified" datetime="2020-02-01T14:17:03+08:00">2020-02-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index">
+                    <span itemprop="name">组成原理</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。</p>
+<p>上一章我们介绍了计算机的基本硬件组成，让我们对计算机大致有一个了解。</p>
+<p>这一章会为大家介绍计算机中信息的表示，有些也是之前学到的，比如二进制的计算。将重点介绍<strong>无符号</strong>（unsigned）、<strong>带符号</strong>、<strong>浮点数</strong>（floating-point）这三种编码方式。</p>
+<p>当然溢出和浮点数特殊的编码方式也会产生与预期不一样的结果，我们也会介绍。</p>
+<a id="more"></a>
+<h2 id="十六进制表示法"><a href="#十六进制表示法" class="headerlink" title="十六进制表示法"></a>十六进制表示法</h2><p>一个<strong>字节</strong>（byte）由8位组成。二进制、十进制与十六进制之间的转化如下表：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0000</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1000</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0001</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1001</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0010</td>
+<td style="text-align:center">A</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">1010</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0011</td>
+<td style="text-align:center">B</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">1011</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:center">C</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">1100</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:center">D</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">1101</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0110</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">1110</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0111</td>
+<td style="text-align:center">F</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">1111</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="字数据大小"><a href="#字数据大小" class="headerlink" title="字数据大小"></a>字数据大小</h2><p>C语言支持的基本数据类型分配的字节数如下表所示：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">C语言声明</th>
+<th style="text-align:center">32位 / 字节</th>
+<th style="text-align:center">64位 / 字节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">(unsigned) char</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) short</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) int</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) long</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">char *</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h2><p>对于带符号数而言，其编码方式与无符号数不同，为补码编码（two’ s complement）。最高有效位为符号位，当符号位为1时，值为负；符号位为0时，值为正。正负数之间补码的关系有如下结论：<strong>一个负数的补码等于将对应正数补码各位取反、末位加一</strong>。</p>
+<p>例如：<code>11010110</code>的真值为<code>-0101010 = -(32+8+2) = -42</code></p>
+<h2 id="整数的表示"><a href="#整数的表示" class="headerlink" title="整数的表示"></a>整数的表示</h2><p>下面定义三个整数数据：$Tmin$ - 最小补码值，$TMax$ - 最大补码值，$UMax$ - 最大无符号数。</p>
+<p>假设字长为 <code>w</code>，定义如下的常量：</p>
+<ul>
+<li>$UMin = 0$ 即 <code>000…0</code></li>
+<li>$UMax =  2^w−1 $ 即 <code>111…1</code></li>
+<li>$TMin = −2^w−1 $ 即 <code>100…0</code></li>
+<li>$ TMax = 2^{w−1}−1 $ 即 <code>011…1</code></li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">16</th>
+<th style="text-align:center">32</th>
+<th style="text-align:center">64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$UMax$</td>
+<td style="text-align:center">255</td>
+<td style="text-align:center">65535</td>
+<td style="text-align:center">4294967295</td>
+<td style="text-align:center">18446744073709551615</td>
+</tr>
+<tr>
+<td style="text-align:center">$TMin$</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">-32768</td>
+<td style="text-align:center">-2147483648</td>
+<td style="text-align:center">-9223372036854775808</td>
+</tr>
+<tr>
+<td style="text-align:center">$TMax$</td>
+<td style="text-align:center">127</td>
+<td style="text-align:center">32767</td>
+<td style="text-align:center">2147483647</td>
+<td style="text-align:center">9223372036854775807</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中          $ | Tmin | = |TMax| + 1 $          $ UMax = 2*TMax + 1 $</p>
+<h2 id="位扩展和位截断运算"><a href="#位扩展和位截断运算" class="headerlink" title="位扩展和位截断运算"></a>位扩展和位截断运算</h2><ul>
+<li><strong>扩展：短转长</strong><br>无符号数：0扩展（前面补0）<br>带符号整数：符号扩展（前面补符）</li>
+<li><strong>截断：长转短</strong><br>强行将高位丢弃，故可能发生“溢出”</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 扩展操作 */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> si = <span class="number">-32768</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">short</span> usi = si;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = si;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">unsingned ui = usi ;</span></pre></td></tr></table></figure>
+<p>输出为</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">si = <span class="number">-32768</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">usi = <span class="number">32768</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">i = <span class="number">-32768</span> FF FF <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 带符号整数：符号扩展 */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">ui = <span class="number">32768</span> <span class="number">00</span> <span class="number">00</span> <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 无符号整数：0扩展 */</span></span></pre></td></tr></table></figure></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 截断操作 */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">32768</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> si = (<span class="keyword">short</span>) i;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> j = si;</span></pre></td></tr></table></figure>
+<p>输出为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">i = <span class="number">32768</span> <span class="number">00</span> <span class="number">00</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">si = <span class="number">-32768</span> <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 截断时发生了“溢出” */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">j = <span class="number">-32768</span> FF FF <span class="number">80</span> <span class="number">00</span></span></pre></td></tr></table></figure>
+<h2 id="IEEE-浮点数标准"><a href="#IEEE-浮点数标准" class="headerlink" title="IEEE 浮点数标准"></a>IEEE 浮点数标准</h2><p>IEEE浮点标准用如下公式表示：</p>
+<script type="math/tex; mode=display">
+V = (-1)^s*M*2^E</script><ul>
+<li><strong>符号</strong>：$s$ 决定其正负号。</li>
+<li><strong>尾数</strong>：$M$ 为二进制小数。对于<strong>规格化的值</strong>而言，$M=1.f_{n-1}…f_1f_0$；对于<strong>非规格化的值</strong>而言，$M=0.f_{n-1}…f_1f_0$。其中$f_{n-1}…f_1f_0$的部分就是 frac 的编码部分。</li>
+<li><strong>阶码</strong>：$E$ 为指数位。对于<strong>规格化的值</strong>而言，$E=Exp−Bias$，对于<strong>非规格化的值</strong>而言，$E=1−Bias$。<ul>
+<li>$Exp$: 是 exp 编码区域的无符号数值</li>
+<li>$Bias$：值为$2^{k−1}−1$的偏移量，其中 $k$ 是 exp 编码的位数。</li>
+</ul>
+</li>
+</ul>
+<p>对于不同的格式，也有不同的编码结构，如下图所示：</p>
+ <img src="/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/1.jpg" class="" title="标准浮点格式"> 
+<h3 id="数字示例"><a href="#数字示例" class="headerlink" title="数字示例"></a>数字示例</h3><p>下面假定8位浮点数，其中有 $k=4$ 的阶码位和 $n=3$ 的小数位。偏移量为 $2^{4-1}-1=7$ 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">    s exp  frac   E   值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    0 0000 000   -6   0   # 这部分是非规范化数值，下一部分是规范化值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    0 0000 001   -6   1&#x2F;8 * 1&#x2F;64 &#x3D; 1&#x2F;512 # 能表示的最接近零的值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    0 0000 010   -6   2&#x2F;8 * 1&#x2F;64 &#x3D; 2&#x2F;512 </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    0 0000 110   -6   6&#x2F;8 * 1&#x2F;64 &#x3D; 6&#x2F;512</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    0 0000 111   -6   7&#x2F;8 * 1&#x2F;64 &#x3D; 7&#x2F;512 # 能表示的最大非规范化值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    0 0001 000   -6   8&#x2F;8 * 1&#x2F;64 &#x3D; 8&#x2F;512 # 能表示的最小规范化值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    0 0001 001   -6   9&#x2F;8 * 1&#x2F;64 &#x3D; 9&#x2F;512</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    0 0110 110   -1   14&#x2F;8 * 1&#x2F;2 &#x3D; 14&#x2F;16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    0 0110 111   -1   15&#x2F;8 * 1&#x2F;2 &#x3D; 15&#x2F;16 # 最接近且小于 1 的值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    0 0111 000    0   8&#x2F;8 * 1 &#x3D; 1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    0 0111 001    0   9&#x2F;8 * 1 &#x3D; 9&#x2F;8      # 最接近且大于 1 的值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    0 0111 010    0   10&#x2F;8 * 1 &#x3D; 10&#x2F;8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    0 1110 110    7   14&#x2F;8 * 128 &#x3D; 224</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    0 1110 111    7   15&#x2F;8 * 128 &#x3D; 240   # 能表示的最大规范化值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    0 1111 000   n&#x2F;a  无穷               # 特殊值</span></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章介绍了不同编码方式表示不同的数据，重点介绍了<strong>补码</strong>、<strong>浮点数</strong>。</p>
+<p>下一章将为大家带来指引计算机工作的<strong>指令系统</strong>，介绍一下<strong>指令系统</strong>的基本概念，涉及少部分<strong>汇编语言</strong>。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://wdxtub.com/csapp/thin-csapp-1/2016/04/16/" target="_blank" rel="noopener">小土刀 - 【读薄 CSAPP】壹 数据表示</a></li>
+<li><a href="https://book.douban.com/subject/26912767/" target="_blank" rel="noopener">Randal E.Bryant / David O’Hallaron - 深入理解计算机系统（原书第3版）</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
+<li><a href="https://www.icourse163.org/course/NJU-1001625001" target="_blank" rel="noopener">袁春风 - 计算机系统基础(一)：程序的表示、转换与链接</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 计算机</a>
+              <a href="/tags/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/" rel="prev" title="1 计算机基本结构">
+      <i class="fa fa-chevron-left"></i> 1 计算机基本结构
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#十六进制表示法"><span class="nav-number">1.</span> <span class="nav-text">十六进制表示法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字数据大小"><span class="nav-number">2.</span> <span class="nav-text">字数据大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补码"><span class="nav-number">3.</span> <span class="nav-text">补码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整数的表示"><span class="nav-number">4.</span> <span class="nav-text">整数的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#位扩展和位截断运算"><span class="nav-number">5.</span> <span class="nav-text">位扩展和位截断运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">6.</span> <span class="nav-text">1si = -32768 80 002usi = 32768 80 003i = -32768 FF FF 80 00 /* 带符号整数：符号扩展 */4ui = 32768 00 00 80 00 /* 无符号整数：0扩展 */</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IEEE-浮点数标准"><span class="nav-number">7.</span> <span class="nav-text">IEEE 浮点数标准</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数字示例"><span class="nav-number">7.1.</span> <span class="nav-text">数字示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brikarl"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Brikarl</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Brikarl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Brikarl" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/yunkai@buaa.edu.cn" title="E-Mail → yunkai@buaa.edu.cn">E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.douban.com/people/141831176/" title="豆瓣 → https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;141831176&#x2F;" rel="noopener" target="_blank">豆瓣</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/33396353" title="B站 → https:&#x2F;&#x2F;space.bilibili.com&#x2F;33396353" rel="noopener" target="_blank">B站</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml">RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brikarl</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">16k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">15 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+</body>
+</html>

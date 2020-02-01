@@ -1,12 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>2 信息的表示与处理</title>
+    <url>/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/</url>
+    <content><![CDATA[<p>本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。</p>
+<p>上一章我们介绍了计算机的基本硬件组成，让我们对计算机大致有一个了解。</p>
+<p>这一章会为大家介绍计算机中信息的表示，有些也是之前学到的，比如二进制的计算。将重点介绍<strong>无符号</strong>（unsigned）、<strong>带符号</strong>、<strong>浮点数</strong>（floating-point）这三种编码方式。</p>
+<p>当然溢出和浮点数特殊的编码方式也会产生与预期不一样的结果，我们也会介绍。</p>
+<a id="more"></a>
+<h2 id="十六进制表示法"><a href="#十六进制表示法" class="headerlink" title="十六进制表示法"></a>十六进制表示法</h2><p>一个<strong>字节</strong>（byte）由8位组成。二进制、十进制与十六进制之间的转化如下表：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0000</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1000</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0001</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1001</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0010</td>
+<td style="text-align:center">A</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">1010</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0011</td>
+<td style="text-align:center">B</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">1011</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:center">C</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">1100</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:center">D</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">1101</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0110</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">1110</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0111</td>
+<td style="text-align:center">F</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">1111</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="字数据大小"><a href="#字数据大小" class="headerlink" title="字数据大小"></a>字数据大小</h2><p>C语言支持的基本数据类型分配的字节数如下表所示：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">C语言声明</th>
+<th style="text-align:center">32位 / 字节</th>
+<th style="text-align:center">64位 / 字节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">(unsigned) char</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) short</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) int</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned) long</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">char *</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h2><p>对于带符号数而言，其编码方式与无符号数不同，为补码编码（two’ s complement）。最高有效位为符号位，当符号位为1时，值为负；符号位为0时，值为正。正负数之间补码的关系有如下结论：<strong>一个负数的补码等于将对应正数补码各位取反、末位加一</strong>。</p>
+<p>例如：<code>11010110</code>的真值为<code>-0101010 = -(32+8+2) = -42</code></p>
+<h2 id="整数的表示"><a href="#整数的表示" class="headerlink" title="整数的表示"></a>整数的表示</h2><p>下面定义三个整数数据：$Tmin$ - 最小补码值，$TMax$ - 最大补码值，$UMax$ - 最大无符号数。</p>
+<p>假设字长为 <code>w</code>，定义如下的常量：</p>
+<ul>
+<li>$UMin = 0$ 即 <code>000…0</code></li>
+<li>$UMax =  2^w−1 $ 即 <code>111…1</code></li>
+<li>$TMin = −2^w−1 $ 即 <code>100…0</code></li>
+<li>$ TMax = 2^{w−1}−1 $ 即 <code>011…1</code></li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">16</th>
+<th style="text-align:center">32</th>
+<th style="text-align:center">64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$UMax$</td>
+<td style="text-align:center">255</td>
+<td style="text-align:center">65535</td>
+<td style="text-align:center">4294967295</td>
+<td style="text-align:center">18446744073709551615</td>
+</tr>
+<tr>
+<td style="text-align:center">$TMin$</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">-32768</td>
+<td style="text-align:center">-2147483648</td>
+<td style="text-align:center">-9223372036854775808</td>
+</tr>
+<tr>
+<td style="text-align:center">$TMax$</td>
+<td style="text-align:center">127</td>
+<td style="text-align:center">32767</td>
+<td style="text-align:center">2147483647</td>
+<td style="text-align:center">9223372036854775807</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中          $ | Tmin | = |TMax| + 1 $          $ UMax = 2*TMax + 1 $</p>
+<h2 id="位扩展和位截断运算"><a href="#位扩展和位截断运算" class="headerlink" title="位扩展和位截断运算"></a>位扩展和位截断运算</h2><ul>
+<li><strong>扩展：短转长</strong><br>无符号数：0扩展（前面补0）<br>带符号整数：符号扩展（前面补符）</li>
+<li><strong>截断：长转短</strong><br>强行将高位丢弃，故可能发生“溢出”</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 扩展操作 */</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">short</span> si = <span class="number">-32768</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">short</span> usi = si;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> i = si;</span></pre></td></tr><tr><td class="code"><pre><span class="line">unsingned ui = usi ;</span></pre></td></tr></table></figure>
+<p>输出为</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">si = <span class="number">-32768</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">usi = <span class="number">32768</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">i = <span class="number">-32768</span> FF FF <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 带符号整数：符号扩展 */</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">ui = <span class="number">32768</span> <span class="number">00</span> <span class="number">00</span> <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 无符号整数：0扩展 */</span></span></pre></td></tr></table></figure></h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 截断操作 */</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">32768</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">short</span> si = (<span class="keyword">short</span>) i;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> j = si;</span></pre></td></tr></table></figure>
+<p>输出为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">i = <span class="number">32768</span> <span class="number">00</span> <span class="number">00</span> <span class="number">80</span> <span class="number">00</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">si = <span class="number">-32768</span> <span class="number">80</span> <span class="number">00</span> <span class="comment">/* 截断时发生了“溢出” */</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">j = <span class="number">-32768</span> FF FF <span class="number">80</span> <span class="number">00</span></span></pre></td></tr></table></figure>
+<h2 id="IEEE-浮点数标准"><a href="#IEEE-浮点数标准" class="headerlink" title="IEEE 浮点数标准"></a>IEEE 浮点数标准</h2><p>IEEE浮点标准用如下公式表示：</p>
+<script type="math/tex; mode=display">
+V = (-1)^s*M*2^E</script><ul>
+<li><strong>符号</strong>：$s$ 决定其正负号。</li>
+<li><strong>尾数</strong>：$M$ 为二进制小数。对于<strong>规格化的值</strong>而言，$M=1.f_{n-1}…f_1f_0$；对于<strong>非规格化的值</strong>而言，$M=0.f_{n-1}…f_1f_0$。其中$f_{n-1}…f_1f_0$的部分就是 frac 的编码部分。</li>
+<li><strong>阶码</strong>：$E$ 为指数位。对于<strong>规格化的值</strong>而言，$E=Exp−Bias$，对于<strong>非规格化的值</strong>而言，$E=1−Bias$。<ul>
+<li>$Exp$: 是 exp 编码区域的无符号数值</li>
+<li>$Bias$：值为$2^{k−1}−1$的偏移量，其中 $k$ 是 exp 编码的位数。</li>
+</ul>
+</li>
+</ul>
+<p>对于不同的格式，也有不同的编码结构，如下图所示：</p>
+ <img src="/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/1.jpg" class="" title="标准浮点格式"> 
+<h3 id="数字示例"><a href="#数字示例" class="headerlink" title="数字示例"></a>数字示例</h3><p>下面假定8位浮点数，其中有 $k=4$ 的阶码位和 $n=3$ 的小数位。偏移量为 $2^{4-1}-1=7$ 。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    s exp  frac   E   值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 000   -6   0   # 这部分是非规范化数值，下一部分是规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 001   -6   1&#x2F;8 * 1&#x2F;64 &#x3D; 1&#x2F;512 # 能表示的最接近零的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 010   -6   2&#x2F;8 * 1&#x2F;64 &#x3D; 2&#x2F;512 </span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 110   -6   6&#x2F;8 * 1&#x2F;64 &#x3D; 6&#x2F;512</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 111   -6   7&#x2F;8 * 1&#x2F;64 &#x3D; 7&#x2F;512 # 能表示的最大非规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0001 000   -6   8&#x2F;8 * 1&#x2F;64 &#x3D; 8&#x2F;512 # 能表示的最小规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0001 001   -6   9&#x2F;8 * 1&#x2F;64 &#x3D; 9&#x2F;512</span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0110 110   -1   14&#x2F;8 * 1&#x2F;2 &#x3D; 14&#x2F;16</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0110 111   -1   15&#x2F;8 * 1&#x2F;2 &#x3D; 15&#x2F;16 # 最接近且小于 1 的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 000    0   8&#x2F;8 * 1 &#x3D; 1</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 001    0   9&#x2F;8 * 1 &#x3D; 9&#x2F;8      # 最接近且大于 1 的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 010    0   10&#x2F;8 * 1 &#x3D; 10&#x2F;8</span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1110 110    7   14&#x2F;8 * 128 &#x3D; 224</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1110 111    7   15&#x2F;8 * 128 &#x3D; 240   # 能表示的最大规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1111 000   n&#x2F;a  无穷               # 特殊值</span></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章介绍了不同编码方式表示不同的数据，重点介绍了<strong>补码</strong>、<strong>浮点数</strong>。</p>
+<p>下一章将为大家带来指引计算机工作的<strong>指令系统</strong>，介绍一下<strong>指令系统</strong>的基本概念，涉及少部分<strong>汇编语言</strong>。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://wdxtub.com/csapp/thin-csapp-1/2016/04/16/" target="_blank" rel="noopener">小土刀 - 【读薄 CSAPP】壹 数据表示</a></li>
+<li><a href="https://book.douban.com/subject/26912767/" target="_blank" rel="noopener">Randal E.Bryant / David O’Hallaron - 深入理解计算机系统（原书第3版）</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
+<li><a href="https://www.icourse163.org/course/NJU-1001625001" target="_blank" rel="noopener">袁春风 - 计算机系统基础(一)：程序的表示、转换与链接</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机</category>
+        <category>组成原理</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
+        <tag>组成原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>1 计算机基本结构</title>
     <url>/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<p>本章将介绍计算机的硬件方面的基本概念以及对冯·诺依曼体系结构的介绍，为未来的学习打好基础。</p>
-<hr>
+    <content><![CDATA[<p>本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。</p>
 <a id="more"></a>
-
 <h2 id="计算机的基本硬件组成"><a href="#计算机的基本硬件组成" class="headerlink" title="计算机的基本硬件组成"></a>计算机的基本硬件组成</h2><ol>
 <li><strong>中央处理器CPU</strong>（Central Processing Unit）：是计算机中最核心的部分。用于执行指令。</li>
 <li><strong>内存</strong>（Memory）：程序读取的数据、计算得到的结果都会存放在内存中，计算机程序也要加载到内存中才可以运行。</li>
@@ -33,7 +259,6 @@
 </li>
 <li><p>采用<strong>存储程序</strong>工作方式。 </p>
 <img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/1.jpeg" class="" title="冯·诺依曼体系结构示意图"> 
-
 </li>
 </ol>
 <h2 id="计算机执行指令的过程"><a href="#计算机执行指令的过程" class="headerlink" title="计算机执行指令的过程"></a>计算机执行指令的过程</h2><ol>
@@ -58,8 +283,8 @@
 </li>
 </ol>
 <img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/2.png" class="" title="计算机结构的简化模型"> 
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章讲了计算机的基本硬件组成、冯·诺依曼体系结构、计算机执行指令的过程。下一章将介绍指令与运算，会涉及简单的汇编语言。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章内容相对简单，介绍了计算机的基本硬件组成、冯·诺依曼体系结构、每个基本硬件的主要功能以及计算机执行指令的过程，让大家对计算机基本组成以及功能有所了解。</p>
+<p>下一章将为大家带来指引计算机中<strong>信息的表示与处理</strong>，来看看计算机是如何用0和1来记录信息的。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li><a href="http://www.chinesemooc.org/mooc/4392" target="_blank" rel="noopener">陆俊林 - 计算机组成</a></li>
 <li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
@@ -81,7 +306,6 @@
     <url>/2020/01/01/%E6%88%91%E7%9A%842019%E5%B9%B4%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>大家好呀。在此记录一下我的2019年个人总结。</p>
 <a id="more"></a>
-
 <h2 id="个人管理"><a href="#个人管理" class="headerlink" title="个人管理"></a>个人管理</h2><p>个人管理分为身体管理、精力管理以及财务管理。</p>
 <p>今年年初为自己添置了两份保险，以应对生活中的风险，也算是对家人和自己负责。由于学习工作的缘故，运动时间相对减少（说白了就是懒），这点不足预期。后来在平时通勤的时候尽量选择爬楼梯来增加运动量。同时对自己的饮食习惯进行调整，少盐多果蔬，一年下来也没生什么病。</p>
 <p>年中的时候读了很多管理精力的内容，慢慢调整自己的习惯。利用日程本和计划表来规划每天的日程。期间也会放任自己的「惰性」，发展新的爱好，结识了新朋友，以此放松，恢复精力。</p>
@@ -111,7 +335,6 @@
     <url>/2018/12/31/2018%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>在此向朋友们分享一下我的2018年。</p>
 <a id="more"></a>
-
 <p>上半年处于低谷期。我是个理想主义者，曾坚信一点：这个世界是美好的，每个人都有基本的道德底线。纵使社会有许多不公，我们依然有法律作为最后的武器。但是上半年各种事件的冲击，使我对此产生了怀疑。</p>
 <p>于是产生了许多负面情绪，那个时候唯一坚持的事就是胶片摄影。镜头也开始对准了一些生活小事，每一次按下快门都会给我带来无限期待，胶片记录下来的影像，也带给了我前所未有的喜悦。</p>
 <p>毕业之后，开始为家中老人拍摄一部纪录片，记录他们七十余年的人生经历。这是我第一次拍摄较大题材的视频，前期做了不少准备，自己的摄影后期水平也得到了进一步的提升。在镜头前，老人们表现出了从未有过的状态，我也开始真正理解「家人」这一词的含义。</p>
@@ -147,7 +370,6 @@
     <url>/2018/12/03/%E3%80%8C%E9%87%8D%E5%BA%86%E6%A3%AE%E6%9E%97%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>许久不见，这次聊聊王家卫导演的「重庆森林」后半部分王菲与梁朝伟之间的故事。</p>
 <a id="more"></a>
-
 <p>王家卫导演的电影中爱情总是一条主线，他电影中的主角总会做一些「不合乎逻辑」的事，这也是我之前不那么中意王家卫导演的原因。在我的电影观里，逻辑才是评判一部电影的标准。</p>
 <p>后来才发现，现实的许多事情是从不合逻辑的。许多看似突然发生的事情过程却异常平静，带给人无穷回味；许多看似平静的事情其下却暗流涌动，积累着情绪准备迸发。而这恐怕也是生活迷人的地方。</p>
 <p>影片中梁朝伟看似有些木讷，后知后觉。但也许他是个很难放下过去的人，喝了许久的咖啡也不愿换一个口味。很多时候无声的安静却显得十分吵闹，因为你很难把情绪排除在外，它们就伴随你左右。就像王菲总把音乐开得很大，试图盖过这无声的喧嚣。</p>
@@ -173,7 +395,6 @@
     <url>/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>有这样一种舞蹈，不论从哪里开始，永远都会回到同样的起点。</p>
 <a id="more"></a>
-
 <h2 id="第一幕"><a href="#第一幕" class="headerlink" title="第一幕"></a>第一幕</h2><p>在以色列，一个平静的中产家庭迎来几位军人的到访。母亲率先察觉到异样，昏厥倒地。父亲看着他们麻利地拿出注射器，给妻子来了一发镇定剂。接着他们宣布一个消息：在外服役的长子牺牲了。</p>
 <p>父亲强忍悲痛接受了军方的专业「慰问」，并告知自己在精神病院的母亲，在商量儿子葬礼事宜时，却得知儿子并没有死，死的是与自己儿子同名的人。这时父亲慌了神，不惜动用特殊关系，要求儿子回家。</p>
 <h2 id="第二幕"><a href="#第二幕" class="headerlink" title="第二幕"></a>第二幕</h2><p>在边境，不满20岁的儿子与其他三位战友驻扎在一个简陋的房中，他们百无聊赖，听着收音机，抱着M4步枪跳舞，为漫步的骆驼放行，用罐头的滚动速度来论证房子在不断倾斜。儿子则将父亲的床边故事改编成漫画，绘在笔记本上。</p>
@@ -187,7 +408,6 @@
 <hr>
 <p>这是一部战争片。有趣的是这部电影出奇地克制，不同于一般印象中战争电影的固有形象，片中没有对战争的强烈表现或对英雄的过分渲染。</p>
  <img src="/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/1.jpg" class=""> 
-
 <p>驻守边疆的四名年轻士兵，任务就是筛查来往的一切车辆，消遣着每日时光。湛蓝的天空映衬着无垠的荒原，色彩艳丽的涂鸦点缀着独舞士兵的孤寂内心，没有丝毫战争的痕迹。</p>
 <p>直到第一声枪响，观众的思绪才被拽回到现实。宁可错杀一千也不放过一个，即便对方是互有好感的年轻女郎，士兵也会抛下画笔端起机枪，屠尽眼前的一切。</p>
 <p>片中还有另一个描写战争的细节，在军方慰问家属时，其「专业性」令人胆寒。在家国大义面前丧子之痛似乎显得微不足道，悲痛也就见怪不怪了。</p>
@@ -195,7 +415,6 @@
 <p>片中有三段狐步舞，分别是第一幕的养老院老人；第二幕的年轻士兵；第三幕的共舞夫妻，分别对应着各自的孤独，宿命的。</p>
 <p>这部电影的主角是父亲。但没有太多对父亲过去的刻画，这也就为观众解读提供发挥空间。父亲像是一个摒弃世俗的利己主义者，会做出任何有利于自己的事情。父亲年轻时也是校园中的风云人物，似乎是这种众星捧月的虚荣会让他去拿传家宝来换取色情杂志。在战役胜利回程的路上，他才会让战友带队引路。</p>
 <img src="/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/2.jpg" class="">
-
 <p>光鲜亮丽的外表，都是掩饰自己脆弱的秘密。</p>
 <p>家人都深知自己的脆弱，他们陪着自己的伤口生活，让自己显得坚强。亲情是他最后的防线。这也是为什么在得知儿子「去世」的第一时间他会选择通知自己的母亲，也是为什么在得知儿子存活的第一时间选择让儿子回到自己身边，而这种对儿子的保护恰恰成为害死他的缘由。</p>
 <p>影片的最后，妻子盯着儿子最后的那幅画说：你是那辆推土机，我是那辆轿车。</p>
@@ -216,7 +435,6 @@
     <url>/2018/05/23/%E3%80%8C%E8%A1%80%E8%A7%82%E9%9F%B3%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>最近观看了去年台湾金马奖的两大热门：「大佛普拉斯」与「血观音」。两者都是讲述台湾本土故事，如果说前者是道出底层人口的无可奈何，那么后者则是深刻剖析上层权贵的尔虞我诈。</p>
 <a id="more"></a>
-
 <p>「血观音」最吸引人的地方莫过于散落片中角落的细节拼图，通过对这些细节的拼凑，看清这些拼图的真相。暴力象征的<strong>血</strong>与慈眉善目的<strong>观音</strong>相结合，展现出权术更迭中无尽的修罗场，令人窒息的黑暗。</p>
 <p>「血观音」最胆战心惊的地方是这部电影中没有一个人心存善念，甚至包括开局就领盒饭的林夫人。林夫人表面是个人畜无害的日本少妇，实则一直将马童Marco当作性奴。在问棠真话的时候，开始一直用日语与之交流，随后在问：「Marco为什么没有来帮你」时却用的是国语，为的是让棠真放下戒心，套出实情。</p>
 <p>要说留有人性最后一丝温存的应该是棠宁。在她终于不愿再受母亲棠夫人摆布，执意赴死的时候，听到自己女儿棠真对自己的控诉：「你们不都是一样吗」。她则打开手铐，表达了自己对女儿最后的关切。</p>
@@ -238,7 +456,6 @@
     <url>/2017/12/31/2017%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>年终总结，既是对一年的回顾，又是对未来的展望。</p>
 <a id="more"></a>
-
 <p>先说一下完成的大事，年初本以为达不成这个目标，没想到最终顺利完成。过程也很曲折，柳暗花明，说好听点是学业上又步入了一个阶段，说难听点就是为自己的胆小怯弱又找到了三年的缓冲期。不过我很期待新的生活。</p>
 <p>年初立志要司考，最终也不了了之，很是惭愧。但依旧收获满满，法律是人类行为的准则，但身边很少人具备基本的法律常识，以致于面对有争议的事件时，大多数人选择了站队，人云亦云。</p>
 <p>暑假在北京呆了一个月，感受了现实北京的残酷。但实习的单位很好，每个人都给予了我足够多的帮助，也发生了不少值得思考的事情。</p>
@@ -272,7 +489,6 @@
     <url>/2017/12/27/%E3%80%8C%E5%96%9C%E4%B8%A7%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>「喜丧」获得第10届FIRST青年电影展最佳影片和最佳导演，前几天观看了这部电影。</p>
 <a id="more"></a>
-
 <p>农村85岁老人含辛茹苦拉扯大六个孩子，到老来却难享天伦之乐，在突发脑血栓后，子女们纷纷想把老人送去敬老院。在子女轮流照看老人期间，发生了许多令人寒心的事情。</p>
 <p>影片分为三个部分，场景分别发生在三个子女家庭中，这其中也有三个关键词。</p>
 <h2 id="三儿子：外面的世界"><a href="#三儿子：外面的世界" class="headerlink" title="三儿子：外面的世界"></a>三儿子：外面的世界</h2><p>影片中有多处细节反映农村青年在外务工的现状，三儿子年轻的时候出来闯荡，生活条件是同辈人中相对较好的，但是在三孙女想去浙江时遭到了父母一致反对，反应最强烈的莫过是三儿媳。她蔑视婆婆，希望自己的女儿留在家中找个条件不错的女婿。</p>
@@ -300,7 +516,6 @@
     <url>/2017/12/21/%E3%80%8C%E8%8A%B3%E5%8D%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>简评主要关注其电影本身而非议论揣测。</p>
 <a id="more"></a>
-
 <p>前几天有幸在平遥国际电影展上观摩了这部电影。虽然在寒风中冻了四个小时，但是整体观影体验不错，最出彩的就是那饱受争议的6分钟长镜头，写实程度在国内战争片中极为罕见。 </p>
 <p>本片重点描写70年代到90年代间中国发生的一系列重大事件中文工团这一群体的变迁，典型的大时代下的纪实人物电影。这其中就不免会涉及一些敏感话题，这也是本片的一大看点。</p>
 <p>但是，冯小刚在这部电影中堆砌的东西实在太多，导致整部电影的主题模糊。文工团是摧残何小萍这类局外人的集权主义代表，而文工团则是那个时代的产物，我大胆猜想冯小刚真实的意思是批判那个时代。就连影片的结尾刘峰、肖穗子、郝淑雯三人重逢的场景中，肖郝二人还是认为当年刘峰确实猥亵的林丁丁，这也加重了刘峰人物的悲剧色彩。但是不知怎么，这种时代批判莫名其妙转化为青春赞歌，最后那个文工团告别仪式堪称影片中最大的败笔，伤害了何小萍和刘峰的集体居然要花大笔墨去写他们的引吭高歌，这也是我最不能理解的。并不是说林丁丁、郝淑雯等人没有资格缅怀青春，只是放在「芳华」整部电影背景下，她们的缅怀显得十分突兀。 </p>
@@ -323,7 +538,6 @@
     <url>/2017/07/17/%E3%80%8C%E5%A4%A7%E6%8A%A4%E6%B3%95%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>近期写简评极少，毕竟作为一个专业的段子手影评人，一定要对自己推荐的每一部电影负责。</p>
 <a id="more"></a>
-
 <p>昨天去看了「大护法」，相比于同期院线热门电影来说，这部电影的关注度真的少得可怜。偌大的影院只有我一个人，影片结束后工作人员直接赶我走，都不给一个看彩蛋的机会。同样地，与前几年国产电影保护月的国漫相比也是相形见绌，两年前的国产动漫里程碑「大圣归来」催生一批自来水军，一年前号称「十二年磨一剑」的「大鱼海棠」即使毁誉参半，但是不乏一些女粉的追捧。</p>
 <p>而这部「大护法」没有自来水的宣传，也没有主创花絮的噱头，使我看这部电影的时候没有抱太大期望，但是观影效果却是出奇地好。这部电影号称PG-13（建议13岁以上的人群观看），但在我看来，血腥暴力程度不亚于一部R级电影。</p>
 <p>「大护法」讲的是一名大护法寻找太子时误入与世隔绝的「花生镇」之后的奇闻异事。里面的居民「花生人」由上官吉安饲养，他们身上长出的「毒蘑菇」，就是成熟的标志，随后会被屠杀并肢解获得果实。</p>
@@ -354,7 +568,6 @@
     <url>/2017/04/29/%E3%80%8C%E4%B8%80%E5%BF%B5%E6%97%A0%E6%98%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>好久没写简评了，一是因为最近没有值得推荐的电影，二是因为我太懒了。</p>
 <a id="more"></a>
-
 <p>最近抽出时间去看了这部默默无闻的电影——「一念无明」。其实这部电影并不是表面上这样默默无闻，它在刚刚过去的「第36届香港电影金像奖」 中获得八项提名，斩获了「最佳男配角」、「最佳女配角」和「新晋导演」这三个奖项。</p>
 <p>电影讲述的是患有「躁郁症」的儿子和父亲之间的故事。</p>
 <p>电影开头，曾志伟饰演的父亲接余文乐饰演的儿子出院，一年前，儿子因意外杀死了自己的母亲，成为轰动一时的弑母恶魔，他也被查出患有「躁郁症」，入院接受治疗。</p>
@@ -386,7 +599,6 @@
     <url>/2017/04/29/%E3%80%8C%E6%88%91%E4%B8%8D%E6%98%AF%E6%BD%98%E9%87%91%E8%8E%B2%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>「我不是潘金莲」的上映真的是一波三折，从一开始的中秋档到国庆档，最后到「史上最强十一月档」，无数人都在猜疑是不是因为审查的问题，而冯导也屡次强调并没有这么一说。</p>
 <a id="more"></a>
-
 <p>很多朋友觉得这部电影单纯讲当官不为民做主的贪官污吏，但是看过原著之后发现，里面几乎没有对贪污受贿的描写，只是一群整天想着为了自己的目的而妄自猜疑别人心思的人，包括李雪莲。（原著中她其实并不是作为一个正面人物存在）</p>
 <p>电影也几乎还原了这一点，然而然而原著中有大量心理活动描写，这个在电影中很难表现（李安的120帧就是为了展现演员心理活动准备的），冯导的处理方式就是淡化，直接就是各种下酒店踢皮球尾大不掉，完全给人一种贪官污吏的感觉。照这么说的话，电影甚至比原著更加话题话题敏感，能上映完全是一个奇迹。</p>
 <p>再有一处小改动就是结尾李雪莲的二胎，原著是李雪莲生下了这个孩子，在电影里面则是流产，这个改动我非常喜欢，一是符合现实，国家从前计划生育，现在推行「二孩政策」；二是给李雪莲的告状整了一个缘由，原著则是李雪莲每次告状之前都会去问牛，直到第十年牛死了，她就放弃了。</p>
@@ -408,7 +620,6 @@
     <url>/2016/12/31/2016%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>以前从未写过任何年终总结，一是觉得写这个略显侨情，二是对自己记忆力比较自负，一年里的事都可以记下来，没有必要另作总结。</p>
 <a id="more"></a>
-
 <p>但是，我自己都没有想到这一年会经历这么多分分合合。所以，我想记录下一些事情，与大家分享。</p>
 <p>年初的时候心血来潮，和几位朋友创立了一个社团，一开始走的也是比较艰难，但比预想的要顺利，有朋友的离开，但是也有更多的朋友加入，我们也是热情似火，一副热闹景象。</p>
 <p>后来也是和一些人产生分歧，各种闹剧，各种不堪，中间没有贵人相助，反而有小人从中作梗。我和几位朋友之间也产生了猜疑，最后也是被泼了一身污水，众叛亲离。</p>
@@ -445,7 +656,6 @@
     <url>/2016/12/31/%E3%80%8C%E6%AF%94%E5%88%A9%E6%9E%97%E6%81%A9%E7%9A%84%E4%B8%AD%E5%9C%BA%E6%88%98%E4%BA%8B%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>之前听说北美口碑扑街了，所以看之前也没有抱太大期望。然而观影结果却出人意料地好，就单从饱受争议的剧情方面来说，这也不乏是一部大作。</p>
 <a id="more"></a>
-
 <p>故事采用闪回方式，这种方式在现在的电影中屡见不鲜，就连制作简单的美剧也采用过，所以这个没有什么好谈的。</p>
 <p>每一个人物性格的刻画是本片的一大亮点，除主演之外，有些人物出场仅几分钟，却个个性格迥异，留下了很深的印象。</p>
 <p>以前许多反映伊拉克战争的电影作品，如「美国狙击手」「拆弹部队」，但是这些作品拍的都像纪录片一样，大部分平铺直叙，中间穿插高潮，但是真正像「比利林恩的中场战事」这样捉住某一件事件具体阐述的作品不多。如果一件事情你用大多的事例来反映，反而会弄巧成拙。</p>
