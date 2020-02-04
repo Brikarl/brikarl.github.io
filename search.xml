@@ -1,6 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>5 存储器</title>
+    <url>/2020/02/03/5%20%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>上一章我们介绍计算机中<strong>流水线指令系统设计</strong>，介绍一下计算机如何<strong>「更快」</strong>地执行，也会介绍如何去解决流水线处理器中的<strong>冒险</strong>。</p>
+<p>这一章会为大家介绍计算机中各式各样的<strong>存储器</strong>，重点介绍<strong>高速缓存</strong>的工作原理。</p>
+<a id="more"></a>
+<h2 id="存储层次结构概况"><a href="#存储层次结构概况" class="headerlink" title="存储层次结构概况"></a>存储层次结构概况</h2><p>我们先把计算机的存储器层次结构和我们日常生活里处理信息、阅读书籍做个对照，好让你更容易理解、记忆存储器的层次结构。</p>
+<p>我们常常把 CPU 比喻成计算机的「大脑」。我们思考的东西，就好比 CPU 中的<strong>寄存器</strong>（Register）。寄存器与其说是存储器，其实它更像是 CPU 本身的一部分，只能存放极其有限的信息，但是速度非常快，和 CPU 同步。而我们大脑中的记忆，就好比 <strong>CPU Cache</strong>（CPU 高速缓存，我们常常简称为<strong>缓存</strong>）。<strong>CPU Cache </strong>用的是一种叫作 <strong>SRAM</strong>（Static Random-Access Memory，静态随机存取存储器）的芯片。</p>
+<h3 id="SRAM"><a href="#SRAM" class="headerlink" title="SRAM"></a>SRAM</h3><p>在 CPU 里，通常会有 L1、L2、L3 这样三层高速缓存。每个 CPU 核心都有一块属于自己的 L1 高速缓存，通常分成<strong>指令缓存</strong>和<strong>数据缓存</strong>，分开存放 CPU 使用的指令和数据。</p>
+<p>L2 的 Cache 同样是每个 CPU 核心都有的，不过它往往不在 CPU 核心的内部。所以，L2 Cache 的访问速度会比 L1 稍微慢一些。而 L3 Cache，则通常是多个 CPU 核心共用的，尺寸会更大一些，访问速度自然也就更慢一些。</p>
+<p>你可以把 CPU 中的 L1 Cache 理解为我们的<strong>短期记忆</strong>，把 L2/L3 Cache 理解成<strong>长期记忆</strong>，把内存当成我们拥有的<strong>书架</strong>。 当我们自己记忆中没有资料的时候，可以从书架上拿书来翻阅。这个过程中就相当于，数据从内存中加载到 CPU 的寄存器和 Cache 中，然后通过「大脑」，也就是 CPU，进行处理和运算。</p>
+<h3 id="DRAM"><a href="#DRAM" class="headerlink" title="DRAM"></a>DRAM</h3><p>内存用的芯片和 Cache 有所不同，它用的是一种叫作 <strong>DRAM</strong>（Dynamic Random Access Memory，动态随机存取存储器）的芯片，比起 SRAM 来说，它的密度更高，有更大的容量，而且它也比 SRAM 芯片便宜不少。</p>
+<p>因为数据是存储在电容里的，电容会不断漏电，所以需要定时刷新充电，才能保持数据不丢失。DRAM 的数据访问电路和刷新电路都比 SRAM 更复杂，所以访问延时也就更长。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/1.png" class=""> 
+<p>各个存储器只和相邻的一层存储器打交道，并且随着一层层向下，存储器的容量逐层增大，访问速度逐层变慢，而单位存储成本也逐层下降，也就构成了我们日常所说的存储器层次结构。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/2.png" class="" title="存储器的层次关系图"> 
+<h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>性能和价格的巨大差异，给我们工程师带来了一个挑战：我们能不能既享受 CPU Cache 的速度，又享受内存、硬盘巨大的容量和低廉的价格呢？</p>
+<p>存储器中数据的<strong>局部性原理</strong>（Principle of Locality）。我们可以利用这个局部性原理，来制定管理和访问数据的策略。这个局部性原理包括<strong>时间局部性</strong>（temporal locality）和<strong>空间局部性</strong>（spatial locality）这两种策略。</p>
+<h3 id="时间局部性"><a href="#时间局部性" class="headerlink" title="时间局部性"></a>时间局部性</h3><p>我们先来看时间局部性。这个策略是说，如果一个数据被访问了，那么它在短时间内还会被再次访问。</p>
+<p>比如说，「哈利波特与魔法石」这本小说，我今天读了一会儿，没读完，明天还会继续读。同理，在一个电子商务型系统中，如果一个用户打开了 App，看到了首屏。我们推断他应该很快还会再次访问网站的其他内容或者页面，我们就将这个用户的个人信息，从存储在硬盘的数据库读取到内存的缓存中来。这利用的就是时间局部性。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/3.png" class="" title="时间局部性"> 
+<h3 id="空间局部性"><a href="#空间局部性" class="headerlink" title="空间局部性"></a>空间局部性</h3><p>我们再来看空间局部性。这个策略是说，如果一个数据被访问了，那么和它相邻的数据也很快会被访问。</p>
+<p>我们还拿刚才读「哈利波特与魔法石」的例子来说。我读完了这本书之后，感觉这书不错，所以就会借阅整套「哈利波特」。这就好比我们的程序，在访问了数组的首项之后，多半会循环访问它的下一项。因为，在存储数据的时候，数组内的多项数据会存储在相邻的位置。这就好比图书馆会把「哈利波特」系列放在一个书架上，摆放在一起，加载的时候，也会一并加载。我们去图书馆借书，往往会一次性把 7 本都借回来。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/4.png" class="" title="空间局部性"> 
+<h2 id="高速缓存的工作原理"><a href="#高速缓存的工作原理" class="headerlink" title="高速缓存的工作原理"></a>高速缓存的工作原理</h2><p>现代 CPU 进行数据读取的时候，无论数据是否已经存储在 Cache 中，CPU 始终会首先访问 Cache。只有当 CPU 在 Cache 中找不到数据的时候，才会去访问内存，并将读取到的数据写入 Cache 之中。当时间局部性原理起作用后，这个最近刚刚被访问的数据，会很快再次被访问。而 Cache 的访问速度远远快于内存，这样，CPU 花在等待内存访问上的时间就大大变短了。</p>
+<p>我就从最基本的<strong>直接映射</strong> Cache（Direct Mapped Cache）为例，来看看整个 Cache 的数据结构和访问逻辑。</p>
+<p>直接映射 Cache 采用的策略，就是确保任何一个<strong>内存块</strong>（Block）的地址，始终映射到一个固定的 CPU Cache 地址（Cache Line）。而这个映射关系，通常用 mod 运算（求余运算）来实现。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/5.png" class="" title="Cache 采用 mod 的方式，把内存块映射到对应的 CPU Cache 中"> 
+<p>实际计算中，有一个小小的技巧，通常我们会把缓存块的数量设置成 2 的 N 次方。这样在计算取模的时候，可以直接取地址的低 N 位，也就是二进制里面的后几位。比如这里的 8 个缓存块，就是 2 的 3 次方。那么，在对 21 取模的时候，可以对 21 的 2 进制表示 10101 取地址的低三位，也就是 101，对应的 5，就是对应的缓存块地址。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/6.png" class=""> 
+<p>因此，当处理器需要访问一个地址时，会先在高速缓冲存储器中进行查找，查找过程中我们首先在概念上把这个地址划分成三个部分：</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/7.jpg" class=""> 
+<h3 id="直接映射"><a href="#直接映射" class="headerlink" title="直接映射"></a>直接映射</h3><p>在<strong>直接映射</strong>中，因为每个 set 对应 1 个 line，所以 set index 的位数就会较多（和之后的多路映射对比）。具体的检索过程就是先通过 set index 确定哪个 set，然后看是否 valid，然后比较那个 set 里唯一 line 的 tag 和地址的 t bits 是否一致，就可以确定是否缓存命中。命中之后根据 block offset 确定偏移量。如果 tag 不匹配的话，这行会被扔掉并放新的数据进来。</p>
+<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/8.jpg" class=""> 
+<p>对于 4 位地址，对应 Block = 2，Set = 4，Line = 1 </p>
+<ul>
+<li><code>0 00 0</code>, miss</li>
+<li><code>0 00 1</code>, hit</li>
+<li><code>0 11 1</code>, miss</li>
+<li><code>1 00 0</code>, miss</li>
+<li><code>0 00 0</code>, miss</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">       v  Tag   Block</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 0  1   0    M[0-1]</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 1  x   x      x</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 2  x   x      x</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 3  1   0    M[6-7]</span></pre></td></tr></table></figure>
+<p>缓存的大小如图所示，对应就是有 4 个 set，所以需要 2 位的 set index，所以进行读入的时候，会根据中间两位来确定在哪个 set 中查找，其中 8 和 0，因为中间两位相同，会产生冲突，导致连续 miss，这个问题可以用多路映射来解决。</p>
+<h3 id="多路映射"><a href="#多路映射" class="headerlink" title="多路映射"></a>多路映射</h3><p>当每个 set 有 E 个 line 的时候，称之为 E 路联结缓存。</p>
+<p>假设每个 set 有 2 个 line，所以就没有那么多 set，也就是说 set index 可以少一位（集合数量少一倍），tag 多一位。</p>
+<p>我们再用刚才的例子来看看是否会增加命中率，对应 Block = 2, Set = 2, Line = 2，我们按照如下顺序进行数据读取：</p>
+<ul>
+<li><code>00 0 0</code>, miss</li>
+<li><code>00 0 1</code>, hit</li>
+<li><code>01 1 1</code>, miss</li>
+<li><code>10 0 0</code>, miss</li>
+<li><code>00 0 0</code>, miss</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">       v   Tag   Block</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 0  1   00    M[0-1]</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 0  1   10    M[8-9]</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 1  1   01    M[6-7]</span></pre></td></tr><tr><td class="code"><pre><span class="line">Set 1  0   x     x</span></pre></td></tr></table></figure>
+<p>可以看到因为每个 set 有 2 个 line，所以只有 2 个 set，set index 也只需要 1 位了，这个情况下即使 8 和 0 的 set index 一致，因为一个 set 可以容纳两个数据，所以最后一次访问 0，就不会 miss 了。</p>
+<h3 id="写入"><a href="#写入" class="headerlink" title="写入"></a>写入</h3><p>如果发生写入命中的时候（也就是要写入的地址在缓存中有），有两种策略：</p>
+<ul>
+<li><strong>写直达</strong>（Write-through）: 命中后更新缓存，同时写入到内存中</li>
+<li><strong>写回</strong>（Write-back）: 直到这个缓存需要被置换出去，才写入到内存中（需要额外的 dirty bit 来表示缓存中的数据是否和内存中相同，因为可能在其他的时候内存中对应地址的数据已经更新，那么重复写入就会导致原有数据丢失）</li>
+</ul>
+<p>在写入 miss 的时候，同样有两种方式：</p>
+<ul>
+<li><strong>写分配</strong>（Write-allocate）: 载入到缓存中，并更新缓存（如果之后还需要对其操作，这个方式就比较好）</li>
+<li><strong>写不分配</strong>（No-write-allocate）: 直接写入到内存中，不载入到缓存</li>
+</ul>
+<p>这四种策略通常的搭配是：</p>
+<ul>
+<li>Write-through + No-write-allocate</li>
+<li>Write-back + Write-allocate</li>
+</ul>
+<p>其中第一种可以保证绝对的数据一致性，第二种效率会比较高（通常情况下）。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章为大家介绍计算机中<strong>存储器框架结构</strong>，重点介绍了<strong>高速缓存的工作原理</strong>。</p>
+<p>到目前为止，计算机组成原理的重点知识就介绍的差不多了，接下来我们就要开始更新操作系统的相关知识了。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
+<li><a href="http://www.chinesemooc.org/mooc/4392" target="_blank" rel="noopener">陆俊林- 计算机组成</a></li>
+<li><a href="https://book.douban.com/subject/26604008/" target="_blank" rel="noopener">戴维 A.帕特森 (David A.Patterson) / 约翰 L.亨尼斯 (John L.Hennessy) - 计算机组成与设计：硬件/软件接口（原书第5版）</a></li>
+<li><a href="https://wdxtub.com/csapp/thin-csapp-3/2016/04/16/" target="_blank" rel="noopener">小土刀 - 【读薄 CSAPP】叁 内存与缓存</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机</category>
+        <category>组成原理</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
+        <tag>组成原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>4 流水线指令设计</title>
     <url>/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/</url>
     <content><![CDATA[<p>上一章我们计算机中的指令系统，重点介绍了传送指令、流程控制和过程调用，了解了在高级语言如何转化为汇编语言来指导计算机工作。</p>
