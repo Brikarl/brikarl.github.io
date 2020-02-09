@@ -1133,11 +1133,6 @@ pre .javascript .function {
   border-bottom-color: #eee;
   color: #eee;
 }
-@media (max-width: 991px) {
-  .sidebar {
-    display: none;
-  }
-}
 .sidebar-inner {
   color: #999;
   padding: 18px 10px;
@@ -1195,7 +1190,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #08ff7f;
+  background: #ff4677;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1318,7 +1313,6 @@ pre .javascript .function {
   .sidebar-toggle {
     left: 20px;
     opacity: 0.8;
-    display: none;
   }
 }
 .sidebar-toggle:hover .toggle-line {
@@ -1503,20 +1497,34 @@ pre .javascript .function {
 }
 .back-to-top {
   background: #222;
+  bottom: -100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
   font-size: 12px;
-  margin: 8px -10px -20px;
-  opacity: 0;
+  left: 30px;
+  opacity: 1;
+  padding: 0 6px;
+  position: fixed;
   text-align: center;
+  transition-property: bottom;
+  z-index: 1300;
   transition-delay: 0s;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
+  width: initial;
+}
+.back-to-top:hover {
+  color: #87daff;
 }
 .back-to-top.back-to-top-on {
-  cursor: pointer;
-  opacity: 1;
+  bottom: 19px;
 }
-.back-to-top.back-to-top-on:hover {
-  opacity: 0.8;
+@media (max-width: 991px) {
+  .back-to-top {
+    left: 20px;
+    opacity: 0.8;
+  }
 }
 .reading-progress-bar {
   background: #37c6c0;
