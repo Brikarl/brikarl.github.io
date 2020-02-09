@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"default"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="上一章我们介绍了操作系统的基本概念以及特性，补充了些在组成原理中未涉及的内容。 接下来两章我们会从虚拟性出发，去分别介绍进程（ CPU 虚拟）和内存管理（内存虚拟）。这一章先介绍进程的基本概念以及进程的调度算法。">
+<meta name="keywords" content="计算机,操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2 进程">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;index.html">
+<meta property="og:site_name" content="吸口好时光">
+<meta property="og:description" content="上一章我们介绍了操作系统的基本概念以及特性，补充了些在组成原理中未涉及的内容。 接下来两章我们会从虚拟性出发，去分别介绍进程（ CPU 虚拟）和内存管理（内存虚拟）。这一章先介绍进程的基本概念以及进程的调度算法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;2.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;4.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;5.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;6.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;7.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;8.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;9.png">
+<meta property="og:updated_time" content="2020-02-09T16:01:06.483Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#x2F;2%20%E8%BF%9B%E7%A8%8B&#x2F;1.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2 进程 | 吸口好时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="吸口好时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">吸口好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">读书观影写字</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Brikarl">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="吸口好时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2 进程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-07 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-07T13:53:53+08:00">2020-02-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-10 00:01:06" itemprop="dateModified" datetime="2020-02-10T00:01:06+08:00">2020-02-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>上一章我们介绍了操作系统的基本概念以及特性，补充了些在<strong>组成原理</strong>中未涉及的内容。</p>
+<p>接下来两章我们会从<strong>虚拟性</strong>出发，去分别介绍<strong>进程</strong>（ CPU 虚拟）和<strong>内存管理</strong>（内存虚拟）。这一章先介绍进程的基本概念以及进程的<strong>调度算法</strong>。</p>
+<a id="more"></a>
+<h2 id="进程的基本概念"><a href="#进程的基本概念" class="headerlink" title="进程的基本概念"></a>进程的基本概念</h2><p>首先，我们先来明确<strong>进程</strong>这个概念。</p>
+<ul>
+<li><strong>程序</strong>（Program）：就是存放在硬盘中的可执行文件，是一系列的指令集合，是<strong>静态</strong>的。</li>
+<li><strong>进程</strong>（Process）：是程序的一次执行过程，是<strong>动态</strong>的。同一个程序多次执行可对应多个进程。</li>
+</ul>
+<p>对于不同进程，操作系统也会为其创造特定的<strong>PID</strong>（Process ID）。PID与分配的资源、运行的情况等信息，共同保存在一个数据结构，<strong>进程控制块</strong>（ <strong>PCB</strong> Process Control Block）。PCB与<strong>程序段</strong>、<strong>数据段</strong>共同构成进程。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/1.png" class="" title="进程的运行"> 
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ul>
+<li><strong>创建态</strong>：当进程正在被创建时，它的状态就是<strong>创建态</strong>。操作系统会为其分配资源，初始化 PCB。</li>
+<li><strong>就绪态</strong>：处于<strong>就绪态</strong>的进程已经具备运行条件，但由于没有空闲的 CPU ，就暂时不能运行。</li>
+<li><strong>运行态</strong>：如果一个进程此时在 CPU 上运行，那么这个进程处于<strong>运行态</strong>。</li>
+<li><strong>阻塞态</strong>：在进程运行的过程中，可能会请求等待某个事件的发生，如等待某种资源的分配，或者等待其他进程的响应。在这个事件发生之前，进程无法继续往下执行，此时操作系统会让这个进程下 CPU ，并让其进入<strong>阻塞态</strong>。</li>
+<li><strong>终止态</strong>：当一个进程请求操作系统终止该进程时，该进程会进入<strong>终止态</strong>，操作系统会回收其所有资源。</li>
+</ul>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/2.png" class="" title="进程的状态"> 
+<h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>这部分我们将讨论 <strong>Unix 系统</strong>的进程创建，首先先介绍一下三个进程的 API：</p>
+<ul>
+<li><strong>fork()</strong>：用来创建新的进程，原来的进程称为<strong>父进程</strong>，新创建的进程称为<strong>子进程</strong>。这两个进程几乎完全相同，但是其 <strong>PID</strong> 不同。</li>
+<li><strong>wait()</strong>：允许父进程等待子进程执行结束。</li>
+<li><strong>exec()</strong>：允许子进程<strong>「偏离」</strong>父进程，执行新的程序。</li>
+</ul>
+<p>下面我们来看一个例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello world (pid:%d)\n"</span>, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">int</span> rc = fork();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    &#123; <span class="comment">// fork 失败并退出</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"fork failed\n"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (rc == <span class="number">0</span>) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#123; <span class="comment">// 子进程</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"hello, I am child (pid:%d)\n"</span>, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">char</span> * myargs[<span class="number">3</span>];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        myargs[<span class="number">0</span>] = strdup(<span class="string">"wc"</span>); <span class="comment">// 新的程序：计算程序行数、词数、字节数</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">        myargs[<span class="number">1</span>] = strdup(<span class="string">"p3.c"</span>); <span class="comment">// 需要计算的程序</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">        myargs[<span class="number">2</span>] = <span class="literal">NULL</span>; <span class="comment">// 标记结束</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">        execvp(myargs[<span class="number">0</span>], myargs); <span class="comment">// 执行程序并退出</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"this shouldn’t print out"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    &#125; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">else</span> &#123; <span class="comment">// 父进程</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">int</span> rc_wait = wait(<span class="literal">NULL</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"hello, I am parent of %d (rc_wait:%d) (pid:%d)\n"</span>, rc, rc_wait, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>对于这个例子，<code>fork()</code>之后，创建子进程，对于父进程来讲<code>rc = 子进程的PID</code>，对于子进程来讲<code>rc = 0</code>，故在子进程执行时，会跳转至其分支，并通过调用<code>execvp()</code>来执行新的程序。</p>
+<p>对于父进程，先调用<code>wait()</code>，以至于先输出子进程结果，不会因为时间片耗尽而提前执行父进程。</p>
+<p>最后输出结果为：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">prompt&gt; ./p3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">hello world (pid:<span class="number">29383</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">hello, I am child (pid:<span class="number">29384</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">		<span class="number">29</span> <span class="number">107</span> <span class="number">1030</span> p3.c</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">hello, I am parent of <span class="number">29384</span> (rc_wait:<span class="number">29384</span>) (pid:<span class="number">29383</span>)</span></pre></td></tr></table></figure>
+<h2 id="进程的调度"><a href="#进程的调度" class="headerlink" title="进程的调度"></a>进程的调度</h2><p>在计算机运行过程中，通常会有多个进程同时竞争 CPU。因此，计算机要选择运行的程序。完成这项工作的部分称为<strong>调度程序</strong>（Scheduler），该程序使用的算法称为<strong>调度算法</strong>（Scheduling Algorithm）。</p>
+<h3 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h3><p>首先，我们引入假设，以简化调度过程。</p>
+<ul>
+<li>每个任务运行相同时间。</li>
+<li>所有任务同时到达。</li>
+<li>一旦启动，每个任务运行到结束。</li>
+<li>所有任务只使用 CPU。</li>
+<li>已知每个任务的运行时间。</li>
+</ul>
+<p>之后，我们会逐步消除假设，以探讨调度问题。</p>
+<h3 id="评价标准"><a href="#评价标准" class="headerlink" title="评价标准"></a>评价标准</h3><p>我们引入两个评价指标，以评价调度算法的优劣：</p>
+<ul>
+<li><strong>周转时间</strong>（Turnaround Time）：$ T_{turnaround} = T_{completion}-T_{arrival} $</li>
+<li><strong>响应时间</strong>（Response Time）：$T_{response}=T_{firstrun}-T_{arrival}$</li>
+</ul>
+<h3 id="先来先服务（First-In-First-Out）"><a href="#先来先服务（First-In-First-Out）" class="headerlink" title="先来先服务（First In, First Out）"></a>先来先服务（First In, First Out）</h3><p>有三个任务A、B、C几乎同时到达（$T_A&lt;T_B&lt;T_C$）。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/3.png" class="" title="FIFO 简单例子"> 
+<p>从上图我们可以看出，A 于 10 结束，B 于 20 结束，C 于 30 结束。因此其平均周转时间为 $\frac{10+20+30}{3}=20$.</p>
+<p>下面，我们舍弃第一条假设（每个任务运行相同时间），还是刚才那三个任务，只不过 A 运行 100 秒，B、C 分别运行 10 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/4.png" class="" title="FIFO 为什么不是最优解"> 
+<p>由此可见，A 任务要整整运行 100 秒，才可以轮到 B 任务。其平均周转时间也高达 $\frac{100+110+120}{3}=110$.</p>
+<p>这种现象称为<strong>车队效应</strong>（Convey effect），有点类似在现实生活中，你在超市排队时，前面的人买了三车食品的样子。</p>
+<h3 id="最短作业优先（Shortest-Job-First）"><a href="#最短作业优先（Shortest-Job-First）" class="headerlink" title="最短作业优先（Shortest Job First）"></a>最短作业优先（Shortest Job First）</h3><p>之前在宜家购物的时候，有一个专门的购物通道是为小件商品用户提供的，这也是 SJF 调度算法的策略。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/5.png" class="" title="SJF 简单例子"> 
+<p>同样是 A、B、C 几乎同时到达。但是由于 B 任务较 A 任务较短。因此其平均周转时间为 $\frac{10+20+120}{3}=50$.缩短了很多。</p>
+<p>这时，我们舍弃第二条假设（所有任务同时到达）。此时假设 A 任务于 $t =0$ 时刻到达且运行 100 秒，而 B、C 任务于 $t =10$ 时刻到达且运行 10 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/6.png" class="" title="当 B、C 稍晚到达 SJF 调度算法"> 
+<p>此时的平均周转时间为 $\frac{100+(110-20)+(120-10)}{3}=103.33$.</p>
+<h3 id="最短时间完成优先（Shortest-Time-to-Completion）"><a href="#最短时间完成优先（Shortest-Time-to-Completion）" class="headerlink" title="最短时间完成优先（Shortest Time-to-Completion）"></a>最短时间完成优先（Shortest Time-to-Completion）</h3><p>现在我们舍弃第三条假设（一旦启动，每个任务运行到结束），使调度程序成为<strong>抢占型</strong>（Preemptive），可以切换上下文（Context switch），暂停运行任务，转而运行其他任务。因此 STCF 中会抢占 A 任务以让 B、C 任务运行，直到后者运行结束后才会继续运行 A 任务。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/7.png" class="" title="STCF 简单示例"> 
+<p>此时的平均周转时间为 $\frac{(120-0)+(20-10)+(30-10)}{3}=50$.</p>
+<p>由于现代计算机采用时分技术，用户更希望能够与操作系统发生交互。因此<strong>响应时间</strong>也是衡量调度算法的关键。上述例子中，A 的响应时间为 0，B 为 0，C 为 10，平均响应时间为$\frac{0+0+10}{3}=3.33$.</p>
+<p>但是三个任务同时到达时，那么第三个任务需要等待很长时间才可以得到响应。</p>
+<h3 id="时间片轮转（Round-Robin）"><a href="#时间片轮转（Round-Robin）" class="headerlink" title="时间片轮转（Round Robin）"></a>时间片轮转（Round Robin）</h3><p>不同于之前每个任务都要完成，RR 则只在一个<strong>时间片</strong>（Time slice）中运行任务，然后会切换到下一个任务，如此往复直到任务全部完成。</p>
+<p>假设三个任务同时到达，每个运行 5 秒，时间片为 1 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/8.png" class=""> 
+<p>对于 RR，其平均响应时间为 $\frac{0+1+2}{3}=1$.而 SJF 则为 $\frac{0+5+10}{3}=5$.</p>
+<p>时间片长短对于 RR 来说非常关键，时间片越短，其响应越快；相应的，上下文切换的消耗会主导其整体性能。</p>
+<p>RR 有着很好的响应速度，但是对于平均周转时间来说，表现并不是那么出色。$\frac{13+14+15}{3}=14$.</p>
+<h3 id="I-O交互"><a href="#I-O交互" class="headerlink" title="I/O交互"></a>I/O交互</h3><p>现在，我们舍弃第四个假设（所有任务只使用 CPU）。当一个运行中的任务发起 I/O 请求时，CPU 会处于空转，等待 I/O 完成。因此，调度程序可以在这段时间内将 CPU 交给下一个任务，等待 I/O 完成后，发起中断。</p>
+<p>假设 A、B 任务都在 CPU 上运行 50ms，但 A 任务每运行 10ms 时，会发起一次 I/O 请求。下图为两种不同的调度算法。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/9.png" class=""> 
+<p>A 任务会分成 5 个 10ms 的子任务。我们可以把子任务当作独立的任务，当系统开始运行时，有 10ms A 与 50ms B，采用 STCF 调度，毫无疑问选择 A 任务。当第一个子任务完成时，CPU 上只剩下 B 任务，因此开始运行。当新的子任务提交后，A 会抢占 B运行 10ms。由此会产生交叠（Overlap），使 CPU 利用率最大化。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章开始介绍操作系统的第一个特性<strong>虚拟化</strong>，先介绍<strong>进程</strong>的相关概念。接着介绍了进程调度的相关知识。</p>
+<p>下一章将为大家带来<strong>内存管理</strong>的相关知识，看看内存是如何虚拟化的。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://book.douban.com/subject/33463930/" target="_blank" rel="noopener">雷姆兹·H.阿帕希杜塞尔 / 安德莉亚·C.阿帕希杜塞尔 - 操作系统导论</a></li>
+<li><a href="https://www.bilibili.com/video/av70156862/" target="_blank" rel="noopener">王道考研 - 操作系统</a></li>
+<li><a href="https://book.douban.com/subject/27096665/" target="_blank" rel="noopener">Andrew S. Tanenbaum / Herbert Bos - 现代操作系统（原书第4版）</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100024701" target="_blank" rel="noopener">刘超 - 趣谈Linux操作系统</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 计算机</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" rel="prev" title="1 操作系统概述">
+      <i class="fa fa-chevron-left"></i> 1 操作系统概述
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的基本概念"><span class="nav-number">1.</span> <span class="nav-text">进程的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的状态"><span class="nav-number">1.1.</span> <span class="nav-text">进程的状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统调用"><span class="nav-number">2.</span> <span class="nav-text">系统调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的调度"><span class="nav-number">3.</span> <span class="nav-text">进程的调度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#假设"><span class="nav-number">3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评价标准"><span class="nav-number">3.2.</span> <span class="nav-text">评价标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#先来先服务（First-In-First-Out）"><span class="nav-number">3.3.</span> <span class="nav-text">先来先服务（First In, First Out）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最短作业优先（Shortest-Job-First）"><span class="nav-number">3.4.</span> <span class="nav-text">最短作业优先（Shortest Job First）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最短时间完成优先（Shortest-Time-to-Completion）"><span class="nav-number">3.5.</span> <span class="nav-text">最短时间完成优先（Shortest Time-to-Completion）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间片轮转（Round-Robin）"><span class="nav-number">3.6.</span> <span class="nav-text">时间片轮转（Round Robin）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#I-O交互"><span class="nav-number">3.7.</span> <span class="nav-text">I/O交互</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brikarl"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Brikarl</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Brikarl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Brikarl" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/yunkai@buaa.edu.cn" title="E-Mail → yunkai@buaa.edu.cn">E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.douban.com/people/141831176/" title="豆瓣 → https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;141831176&#x2F;" rel="noopener" target="_blank">豆瓣</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/33396353" title="B站 → https:&#x2F;&#x2F;space.bilibili.com&#x2F;33396353" rel="noopener" target="_blank">B站</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml">RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brikarl</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">34k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">31 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+</body>
+</html>

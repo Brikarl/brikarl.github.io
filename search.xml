@@ -1,9 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>2 进程</title>
+    <url>/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/</url>
+    <content><![CDATA[<p>上一章我们介绍了操作系统的基本概念以及特性，补充了些在<strong>组成原理</strong>中未涉及的内容。</p>
+<p>接下来两章我们会从<strong>虚拟性</strong>出发，去分别介绍<strong>进程</strong>（ CPU 虚拟）和<strong>内存管理</strong>（内存虚拟）。这一章先介绍进程的基本概念以及进程的<strong>调度算法</strong>。</p>
+<a id="more"></a>
+<h2 id="进程的基本概念"><a href="#进程的基本概念" class="headerlink" title="进程的基本概念"></a>进程的基本概念</h2><p>首先，我们先来明确<strong>进程</strong>这个概念。</p>
+<ul>
+<li><strong>程序</strong>（Program）：就是存放在硬盘中的可执行文件，是一系列的指令集合，是<strong>静态</strong>的。</li>
+<li><strong>进程</strong>（Process）：是程序的一次执行过程，是<strong>动态</strong>的。同一个程序多次执行可对应多个进程。</li>
+</ul>
+<p>对于不同进程，操作系统也会为其创造特定的<strong>PID</strong>（Process ID）。PID与分配的资源、运行的情况等信息，共同保存在一个数据结构，<strong>进程控制块</strong>（ <strong>PCB</strong> Process Control Block）。PCB与<strong>程序段</strong>、<strong>数据段</strong>共同构成进程。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/1.png" class="" title="进程的运行"> 
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ul>
+<li><strong>创建态</strong>：当进程正在被创建时，它的状态就是<strong>创建态</strong>。操作系统会为其分配资源，初始化 PCB。</li>
+<li><strong>就绪态</strong>：处于<strong>就绪态</strong>的进程已经具备运行条件，但由于没有空闲的 CPU ，就暂时不能运行。</li>
+<li><strong>运行态</strong>：如果一个进程此时在 CPU 上运行，那么这个进程处于<strong>运行态</strong>。</li>
+<li><strong>阻塞态</strong>：在进程运行的过程中，可能会请求等待某个事件的发生，如等待某种资源的分配，或者等待其他进程的响应。在这个事件发生之前，进程无法继续往下执行，此时操作系统会让这个进程下 CPU ，并让其进入<strong>阻塞态</strong>。</li>
+<li><strong>终止态</strong>：当一个进程请求操作系统终止该进程时，该进程会进入<strong>终止态</strong>，操作系统会回收其所有资源。</li>
+</ul>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/2.png" class="" title="进程的状态"> 
+<h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>这部分我们将讨论 <strong>Unix 系统</strong>的进程创建，首先先介绍一下三个进程的 API：</p>
+<ul>
+<li><strong>fork()</strong>：用来创建新的进程，原来的进程称为<strong>父进程</strong>，新创建的进程称为<strong>子进程</strong>。这两个进程几乎完全相同，但是其 <strong>PID</strong> 不同。</li>
+<li><strong>wait()</strong>：允许父进程等待子进程执行结束。</li>
+<li><strong>exec()</strong>：允许子进程<strong>「偏离」</strong>父进程，执行新的程序。</li>
+</ul>
+<p>下面我们来看一个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello world (pid:%d)\n"</span>, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">int</span> rc = fork();</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123; <span class="comment">// fork 失败并退出</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"fork failed\n"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (rc == <span class="number">0</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123; <span class="comment">// 子进程</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"hello, I am child (pid:%d)\n"</span>, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">char</span> * myargs[<span class="number">3</span>];</span></pre></td></tr><tr><td class="code"><pre><span class="line">        myargs[<span class="number">0</span>] = strdup(<span class="string">"wc"</span>); <span class="comment">// 新的程序：计算程序行数、词数、字节数</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        myargs[<span class="number">1</span>] = strdup(<span class="string">"p3.c"</span>); <span class="comment">// 需要计算的程序</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        myargs[<span class="number">2</span>] = <span class="literal">NULL</span>; <span class="comment">// 标记结束</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        execvp(myargs[<span class="number">0</span>], myargs); <span class="comment">// 执行程序并退出</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"this shouldn’t print out"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125; </span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">else</span> &#123; <span class="comment">// 父进程</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">int</span> rc_wait = wait(<span class="literal">NULL</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">printf</span>(<span class="string">"hello, I am parent of %d (rc_wait:%d) (pid:%d)\n"</span>, rc, rc_wait, (<span class="keyword">int</span>) getpid());</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>对于这个例子，<code>fork()</code>之后，创建子进程，对于父进程来讲<code>rc = 子进程的PID</code>，对于子进程来讲<code>rc = 0</code>，故在子进程执行时，会跳转至其分支，并通过调用<code>execvp()</code>来执行新的程序。</p>
+<p>对于父进程，先调用<code>wait()</code>，以至于先输出子进程结果，不会因为时间片耗尽而提前执行父进程。</p>
+<p>最后输出结果为：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">prompt&gt; ./p3</span></pre></td></tr><tr><td class="code"><pre><span class="line">hello world (pid:<span class="number">29383</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">hello, I am child (pid:<span class="number">29384</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">		<span class="number">29</span> <span class="number">107</span> <span class="number">1030</span> p3.c</span></pre></td></tr><tr><td class="code"><pre><span class="line">hello, I am parent of <span class="number">29384</span> (rc_wait:<span class="number">29384</span>) (pid:<span class="number">29383</span>)</span></pre></td></tr></table></figure>
+<h2 id="进程的调度"><a href="#进程的调度" class="headerlink" title="进程的调度"></a>进程的调度</h2><p>在计算机运行过程中，通常会有多个进程同时竞争 CPU。因此，计算机要选择运行的程序。完成这项工作的部分称为<strong>调度程序</strong>（Scheduler），该程序使用的算法称为<strong>调度算法</strong>（Scheduling Algorithm）。</p>
+<h3 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h3><p>首先，我们引入假设，以简化调度过程。</p>
+<ul>
+<li>每个任务运行相同时间。</li>
+<li>所有任务同时到达。</li>
+<li>一旦启动，每个任务运行到结束。</li>
+<li>所有任务只使用 CPU。</li>
+<li>已知每个任务的运行时间。</li>
+</ul>
+<p>之后，我们会逐步消除假设，以探讨调度问题。</p>
+<h3 id="评价标准"><a href="#评价标准" class="headerlink" title="评价标准"></a>评价标准</h3><p>我们引入两个评价指标，以评价调度算法的优劣：</p>
+<ul>
+<li><strong>周转时间</strong>（Turnaround Time）：$ T_{turnaround} = T_{completion}-T_{arrival} $</li>
+<li><strong>响应时间</strong>（Response Time）：$T_{response}=T_{firstrun}-T_{arrival}$</li>
+</ul>
+<h3 id="先来先服务（First-In-First-Out）"><a href="#先来先服务（First-In-First-Out）" class="headerlink" title="先来先服务（First In, First Out）"></a>先来先服务（First In, First Out）</h3><p>有三个任务A、B、C几乎同时到达（$T_A&lt;T_B&lt;T_C$）。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/3.png" class="" title="FIFO 简单例子"> 
+<p>从上图我们可以看出，A 于 10 结束，B 于 20 结束，C 于 30 结束。因此其平均周转时间为 $\frac{10+20+30}{3}=20$.</p>
+<p>下面，我们舍弃第一条假设（每个任务运行相同时间），还是刚才那三个任务，只不过 A 运行 100 秒，B、C 分别运行 10 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/4.png" class="" title="FIFO 为什么不是最优解"> 
+<p>由此可见，A 任务要整整运行 100 秒，才可以轮到 B 任务。其平均周转时间也高达 $\frac{100+110+120}{3}=110$.</p>
+<p>这种现象称为<strong>车队效应</strong>（Convey effect），有点类似在现实生活中，你在超市排队时，前面的人买了三车食品的样子。</p>
+<h3 id="最短作业优先（Shortest-Job-First）"><a href="#最短作业优先（Shortest-Job-First）" class="headerlink" title="最短作业优先（Shortest Job First）"></a>最短作业优先（Shortest Job First）</h3><p>之前在宜家购物的时候，有一个专门的购物通道是为小件商品用户提供的，这也是 SJF 调度算法的策略。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/5.png" class="" title="SJF 简单例子"> 
+<p>同样是 A、B、C 几乎同时到达。但是由于 B 任务较 A 任务较短。因此其平均周转时间为 $\frac{10+20+120}{3}=50$.缩短了很多。</p>
+<p>这时，我们舍弃第二条假设（所有任务同时到达）。此时假设 A 任务于 $t =0$ 时刻到达且运行 100 秒，而 B、C 任务于 $t =10$ 时刻到达且运行 10 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/6.png" class="" title="当 B、C 稍晚到达 SJF 调度算法"> 
+<p>此时的平均周转时间为 $\frac{100+(110-20)+(120-10)}{3}=103.33$.</p>
+<h3 id="最短时间完成优先（Shortest-Time-to-Completion）"><a href="#最短时间完成优先（Shortest-Time-to-Completion）" class="headerlink" title="最短时间完成优先（Shortest Time-to-Completion）"></a>最短时间完成优先（Shortest Time-to-Completion）</h3><p>现在我们舍弃第三条假设（一旦启动，每个任务运行到结束），使调度程序成为<strong>抢占型</strong>（Preemptive），可以切换上下文（Context switch），暂停运行任务，转而运行其他任务。因此 STCF 中会抢占 A 任务以让 B、C 任务运行，直到后者运行结束后才会继续运行 A 任务。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/7.png" class="" title="STCF 简单示例"> 
+<p>此时的平均周转时间为 $\frac{(120-0)+(20-10)+(30-10)}{3}=50$.</p>
+<p>由于现代计算机采用时分技术，用户更希望能够与操作系统发生交互。因此<strong>响应时间</strong>也是衡量调度算法的关键。上述例子中，A 的响应时间为 0，B 为 0，C 为 10，平均响应时间为$\frac{0+0+10}{3}=3.33$.</p>
+<p>但是三个任务同时到达时，那么第三个任务需要等待很长时间才可以得到响应。</p>
+<h3 id="时间片轮转（Round-Robin）"><a href="#时间片轮转（Round-Robin）" class="headerlink" title="时间片轮转（Round Robin）"></a>时间片轮转（Round Robin）</h3><p>不同于之前每个任务都要完成，RR 则只在一个<strong>时间片</strong>（Time slice）中运行任务，然后会切换到下一个任务，如此往复直到任务全部完成。</p>
+<p>假设三个任务同时到达，每个运行 5 秒，时间片为 1 秒。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/8.png" class=""> 
+<p>对于 RR，其平均响应时间为 $\frac{0+1+2}{3}=1$.而 SJF 则为 $\frac{0+5+10}{3}=5$.</p>
+<p>时间片长短对于 RR 来说非常关键，时间片越短，其响应越快；相应的，上下文切换的消耗会主导其整体性能。</p>
+<p>RR 有着很好的响应速度，但是对于平均周转时间来说，表现并不是那么出色。$\frac{13+14+15}{3}=14$.</p>
+<h3 id="I-O交互"><a href="#I-O交互" class="headerlink" title="I/O交互"></a>I/O交互</h3><p>现在，我们舍弃第四个假设（所有任务只使用 CPU）。当一个运行中的任务发起 I/O 请求时，CPU 会处于空转，等待 I/O 完成。因此，调度程序可以在这段时间内将 CPU 交给下一个任务，等待 I/O 完成后，发起中断。</p>
+<p>假设 A、B 任务都在 CPU 上运行 50ms，但 A 任务每运行 10ms 时，会发起一次 I/O 请求。下图为两种不同的调度算法。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/9.png" class=""> 
+<p>A 任务会分成 5 个 10ms 的子任务。我们可以把子任务当作独立的任务，当系统开始运行时，有 10ms A 与 50ms B，采用 STCF 调度，毫无疑问选择 A 任务。当第一个子任务完成时，CPU 上只剩下 B 任务，因此开始运行。当新的子任务提交后，A 会抢占 B运行 10ms。由此会产生交叠（Overlap），使 CPU 利用率最大化。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章开始介绍操作系统的第一个特性<strong>虚拟化</strong>，先介绍<strong>进程</strong>的相关概念。接着介绍了进程调度的相关知识。</p>
+<p>下一章将为大家带来<strong>内存管理</strong>的相关知识，看看内存是如何虚拟化的。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://book.douban.com/subject/33463930/" target="_blank" rel="noopener">雷姆兹·H.阿帕希杜塞尔 / 安德莉亚·C.阿帕希杜塞尔 - 操作系统导论</a></li>
+<li><a href="https://www.bilibili.com/video/av70156862/" target="_blank" rel="noopener">王道考研 - 操作系统</a></li>
+<li><a href="https://book.douban.com/subject/27096665/" target="_blank" rel="noopener">Andrew S. Tanenbaum / Herbert Bos - 现代操作系统（原书第4版）</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100024701" target="_blank" rel="noopener">刘超 - 趣谈Linux操作系统</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机</category>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>1 操作系统概述</title>
-    <url>/2020/02/06/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/</url>
-    <content><![CDATA[<p>之前我们介绍了计算机的<strong>组成原理</strong>，从今天开始，我们要开始介绍计算机的<strong>操作系统</strong>。操作系统作为用户与硬件之间最重要的枢纽，有着非常重要的意义。本章将带来操作系统的基本概念、功能特性、发展历史以及体系结构，也会补充些硬件方面的知识，完善知识结构。</p>
+    <url>/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<p>之前我们介绍了计算机的<strong>组成原理</strong>，从今天开始，我们要开始介绍计算机的<strong>操作系统</strong>。操作系统作为用户与硬件之间最重要的枢纽，有着非常重要的意义。</p>
+<p>本章将带来操作系统的基本概念、功能特性、发展历史以及体系结构，也会补充些硬件方面的知识，完善知识结构。</p>
 <a id="more"></a>
 <h2 id="操作系统的基本概念"><a href="#操作系统的基本概念" class="headerlink" title="操作系统的基本概念"></a>操作系统的基本概念</h2><p>之前我们了解过、计算机由处理器、内存、磁盘、输入输出等设备组成。而我们现在操作这些硬件以实现某些功能的时候，并不需要去掌握其底层逻辑。这是因为<strong>操作系统</strong>为用户程序提供了一个更简洁、更清晰的计算机模型，并且管理硬件部分。</p>
 <p>目前，计算机有两种运行模式：</p>
@@ -13,7 +108,135 @@
 <ul>
 <li>用户接口程序：shell（基于文本），图形用户界面（GUI）。</li>
 </ul>
-<img src="/2020/02/06/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/1.png" class="" title="操作系统所处的位置"> 
+<img src="/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/1.png" class="" title="操作系统所处的位置"> 
+</li>
+</ul>
+<p>下面我们以应用程序的实际例子，来介绍下操作系统对硬件资源管理的功能：</p>
+<ul>
+<li><strong>文件管理</strong>：打开文件夹，找到可执行文件存放的位置。</li>
+<li><strong>存储器管理</strong>：把程序相关数据加载到内存中。</li>
+<li><strong>处理器管理</strong>：CPU处理对应进程。</li>
+<li><strong>设备管理</strong>：将键盘、显示器等设备分配给该程序。</li>
+</ul>
+<p>接下来的几章也会围绕以上功能展开。</p>
+<h2 id="操作系统的发展"><a href="#操作系统的发展" class="headerlink" title="操作系统的发展"></a>操作系统的发展</h2><ul>
+<li><strong>手工操作阶段</strong>：早期的计算机程序要使用打孔卡来运作，需要人工放入打孔卡来交给计算机去执行。</li>
+<li><strong>批处理阶段</strong><ul>
+<li>单道批处理系统：单周期处理器。</li>
+<li>多道批处理系统：流水线处理器。</li>
+</ul>
+</li>
+<li><strong>分时操作系统</strong>：计算机以<strong>时间片</strong>为单位<strong>轮流</strong>为各个用户、作业服务，各个用户可通过终端与计算机进行交互。</li>
+<li><strong>实时操作系统</strong>：在前者的基础上更能优先处理某些紧急任务。</li>
+<li>网络操作系统</li>
+<li>分布式操作系统</li>
+<li>个人计算机操作系统</li>
+</ul>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p><strong>异常</strong>（Exception）其实是一个硬件和软件组合到一起的处理过程。当处理器检测到有事件发生时，会通过<strong>异常表</strong>(Exception Table)来确定跳转的位置，到一个专门处理这类事件的操作系统子程序（异常处理程序）。当异常处理程序完成处理后，根据引起异常事件的类型，发生以下三种情况中的一种：</p>
+<ul>
+<li>返回当前指令。</li>
+<li>返回下一条指令。</li>
+<li><p>终止。</p>
+ 
+</li>
+</ul>
+<h3 id="异步异常（中断）"><a href="#异步异常（中断）" class="headerlink" title="异步异常（中断）"></a>异步异常（中断）</h3><p><strong>异步异常</strong>(Asynchronous Exception)称之为<strong>中断</strong>(Interrupt)，是由处理器外面发生的事情引起的。对于执行程序来说，这种“中断”的发生完全是异步的，因为不知道什么时候会发生，CPU对其的响应也完全是被动的。例如：</p>
+<ul>
+<li><strong>计时器中断</strong>：计时器中断是由计时器芯片每隔几毫秒触发的，内核用计时器终端来从用户程序手上拿回控制权。</li>
+<li><strong>I/O 中断</strong>：I/O 中断类型比较多样，比方说键盘输入了 ctrl-c，网络中一个包接收完毕，都会触发这样的中断。</li>
+</ul>
+<h3 id="同步异常"><a href="#同步异常" class="headerlink" title="同步异常"></a>同步异常</h3><p><strong>同步异常</strong>(Synchronous Exception)是因为执行某条指令所导致的事件，分为<strong>陷阱</strong>(Trap)、<strong>故障</strong>(Fault)和<strong>终止</strong>(Abort)三种情况。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">原因</th>
+<th style="text-align:center">示例</th>
+<th style="text-align:center">触发时机</th>
+<th style="text-align:center">处理后操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">中断</td>
+<td style="text-align:center">I/O设备信号</td>
+<td style="text-align:center">用户键盘输入</td>
+<td style="text-align:center">异步</td>
+<td style="text-align:center">下一条指令</td>
+</tr>
+<tr>
+<td style="text-align:center">陷阱</td>
+<td style="text-align:center">程序刻意触发</td>
+<td style="text-align:center">程序进行系统调用</td>
+<td style="text-align:center">同步</td>
+<td style="text-align:center">下一条指令</td>
+</tr>
+<tr>
+<td style="text-align:center">故障</td>
+<td style="text-align:center">程序执行出错</td>
+<td style="text-align:center">程序加载时缺页</td>
+<td style="text-align:center">同步</td>
+<td style="text-align:center">当前指令</td>
+</tr>
+<tr>
+<td style="text-align:center">中止</td>
+<td style="text-align:center">故障无法恢复</td>
+<td style="text-align:center">整数除零</td>
+<td style="text-align:center">同步</td>
+<td style="text-align:center">退出程序</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="操作系统的基本特征"><a href="#操作系统的基本特征" class="headerlink" title="操作系统的基本特征"></a>操作系统的基本特征</h2><h3 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h3><ul>
+<li><strong>并发</strong>：指的是两个或多个事件在同一时间间隔内发生。这些事件在宏观上是同时发生的，但在微观上是交替发生的。</li>
+<li><strong>并行</strong>：指的是两个或多个事件在同一时刻同时发生。</li>
+</ul>
+<p>例如：我们可以边写作业边听歌，这是并行。也可以写一会儿作业听一会儿歌，只要我们做事情足够快，就会在宏观上看起来同时发生。</p>
+<h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><p><strong>异步</strong>：在多通道程序环境下，允许多个程序并发执行，但由于资源有限，进程的执行不是一贯到底的，而是走走停停，以不可预知的速度向前推进，这就是进程的异步性。</p>
+<p>例如：我们有时候会在特定时间间隔内写完作业，以至于我们听歌并不能一贯到底。</p>
+<h3 id="虚拟"><a href="#虚拟" class="headerlink" title="虚拟"></a>虚拟</h3><p><strong>虚拟</strong>：把一个物理上的实体变为若干个逻辑上的对应物。物理实体（前者）是实际存在的，而逻辑上对应物（后者）是用户感受到的。</p>
+<p>例如：</p>
+<ul>
+<li>CPU 的<strong>时分复用技术</strong>，使得在用户看来有多个 CPU 为自己服务。</li>
+<li>内存的<strong>空分复用技术</strong>，虚拟内存</li>
+</ul>
+<h3 id="共享"><a href="#共享" class="headerlink" title="共享"></a>共享</h3><p><strong>共享</strong>：资源共享，指系统中的资源可供内存中多个并发执行的进程共同使用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章由计算机组成过渡到了计算机操作系统，重点为大家介绍了操作系统的特征和异常。接下来几章也会围绕上述内容展开。</p>
+<p>下一章将为大家带来<strong>进程与线程</strong>的知识，带大家看看 CPU 是如何分配和调度自己的资源的。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://www.bilibili.com/video/av70156862/" target="_blank" rel="noopener">王道考研 - 操作系统</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100026001" target="_blank" rel="noopener">徐文浩 - 深入浅出计算机组成原理</a></li>
+<li><a href="https://wdxtub.com/csapp/thin-csapp-5/2016/04/16/" target="_blank" rel="noopener">小土刀 - 【读薄 CSAPP】伍 异常控制流</a></li>
+<li><a href="https://book.douban.com/subject/27096665/" target="_blank" rel="noopener">Andrew S. Tanenbaum / Herbert Bos - 现代操作系统（原书第4版）</a></li>
+<li><a href="https://book.douban.com/subject/26912767/" target="_blank" rel="noopener">Randal E.Bryant / David O’Hallaron - 深入理解计算机系统（原书第3版）</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机</category>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>1 操作系统概述</title>
+    <url>/2020/02/06/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<p>之前我们介绍了计算机的<strong>组成原理</strong>，从今天开始，我们要开始介绍计算机的<strong>操作系统</strong>。操作系统作为用户与硬件之间最重要的枢纽，有着非常重要的意义。</p>
+<p>本章将带来操作系统的基本概念、功能特性、发展历史以及体系结构，也会补充些硬件方面的知识，完善知识结构。</p>
+<a id="more"></a>
+<h2 id="操作系统的基本概念"><a href="#操作系统的基本概念" class="headerlink" title="操作系统的基本概念"></a>操作系统的基本概念</h2><p>之前我们了解过、计算机由处理器、内存、磁盘、输入输出等设备组成。而我们现在操作这些硬件以实现某些功能的时候，并不需要去掌握其底层逻辑。这是因为<strong>操作系统</strong>为用户程序提供了一个更简洁、更清晰的计算机模型，并且管理硬件部分。</p>
+<p>目前，计算机有两种运行模式：</p>
+<ul>
+<li><strong>内核态</strong>：操作系统运行于此，在这个模式下，操作系统拥有对所有硬件的完全访问权。</li>
+<li><p><strong>用户态</strong>：软件的其余部分均运行于此。</p>
+<ul>
+<li>用户接口程序：shell（基于文本），图形用户界面（GUI）。</li>
+</ul>
+ 
 </li>
 </ul>
 <p>下面我们以应用程序的实际例子，来介绍下操作系统对硬件资源管理的功能：</p>
@@ -129,7 +352,7 @@
   </entry>
   <entry>
     <title>5 存储器</title>
-    <url>/2020/02/03/5%20%E5%86%85%E5%AD%98/</url>
+    <url>/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/</url>
     <content><![CDATA[<p>上一章我们介绍计算机中<strong>流水线指令系统设计</strong>，介绍一下计算机如何<strong>「更快」</strong>地执行，也会介绍如何去解决流水线处理器中的<strong>冒险</strong>。</p>
 <p>这一章会为大家介绍计算机中各式各样的<strong>存储器</strong>，重点介绍<strong>高速缓存</strong>的工作原理。</p>
 <a id="more"></a>
@@ -140,27 +363,27 @@
 <p>你可以把 CPU 中的 L1 Cache 理解为我们的<strong>短期记忆</strong>，把 L2/L3 Cache 理解成<strong>长期记忆</strong>，把内存当成我们拥有的<strong>书架</strong>。 当我们自己记忆中没有资料的时候，可以从书架上拿书来翻阅。这个过程中就相当于，数据从内存中加载到 CPU 的寄存器和 Cache 中，然后通过「大脑」，也就是 CPU，进行处理和运算。</p>
 <h3 id="DRAM"><a href="#DRAM" class="headerlink" title="DRAM"></a>DRAM</h3><p>内存用的芯片和 Cache 有所不同，它用的是一种叫作 <strong>DRAM</strong>（Dynamic Random Access Memory，动态随机存取存储器）的芯片，比起 SRAM 来说，它的密度更高，有更大的容量，而且它也比 SRAM 芯片便宜不少。</p>
 <p>因为数据是存储在电容里的，电容会不断漏电，所以需要定时刷新充电，才能保持数据不丢失。DRAM 的数据访问电路和刷新电路都比 SRAM 更复杂，所以访问延时也就更长。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/1.png" class=""> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/1.png" class=""> 
 <p>各个存储器只和相邻的一层存储器打交道，并且随着一层层向下，存储器的容量逐层增大，访问速度逐层变慢，而单位存储成本也逐层下降，也就构成了我们日常所说的存储器层次结构。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/2.png" class="" title="存储器的层次关系图"> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/2.png" class="" title="存储器的层次关系图"> 
 <h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>性能和价格的巨大差异，给我们工程师带来了一个挑战：我们能不能既享受 CPU Cache 的速度，又享受内存、硬盘巨大的容量和低廉的价格呢？</p>
 <p>存储器中数据的<strong>局部性原理</strong>（Principle of Locality）。我们可以利用这个局部性原理，来制定管理和访问数据的策略。这个局部性原理包括<strong>时间局部性</strong>（temporal locality）和<strong>空间局部性</strong>（spatial locality）这两种策略。</p>
 <h3 id="时间局部性"><a href="#时间局部性" class="headerlink" title="时间局部性"></a>时间局部性</h3><p>我们先来看时间局部性。这个策略是说，如果一个数据被访问了，那么它在短时间内还会被再次访问。</p>
 <p>比如说，「哈利波特与魔法石」这本小说，我今天读了一会儿，没读完，明天还会继续读。同理，在一个电子商务型系统中，如果一个用户打开了 App，看到了首屏。我们推断他应该很快还会再次访问网站的其他内容或者页面，我们就将这个用户的个人信息，从存储在硬盘的数据库读取到内存的缓存中来。这利用的就是时间局部性。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/3.png" class="" title="时间局部性"> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/3.png" class="" title="时间局部性"> 
 <h3 id="空间局部性"><a href="#空间局部性" class="headerlink" title="空间局部性"></a>空间局部性</h3><p>我们再来看空间局部性。这个策略是说，如果一个数据被访问了，那么和它相邻的数据也很快会被访问。</p>
 <p>我们还拿刚才读「哈利波特与魔法石」的例子来说。我读完了这本书之后，感觉这书不错，所以就会借阅整套「哈利波特」。这就好比我们的程序，在访问了数组的首项之后，多半会循环访问它的下一项。因为，在存储数据的时候，数组内的多项数据会存储在相邻的位置。这就好比图书馆会把「哈利波特」系列放在一个书架上，摆放在一起，加载的时候，也会一并加载。我们去图书馆借书，往往会一次性把 7 本都借回来。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/4.png" class="" title="空间局部性"> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/4.png" class="" title="空间局部性"> 
 <h2 id="高速缓存的工作原理"><a href="#高速缓存的工作原理" class="headerlink" title="高速缓存的工作原理"></a>高速缓存的工作原理</h2><p>现代 CPU 进行数据读取的时候，无论数据是否已经存储在 Cache 中，CPU 始终会首先访问 Cache。只有当 CPU 在 Cache 中找不到数据的时候，才会去访问内存，并将读取到的数据写入 Cache 之中。当时间局部性原理起作用后，这个最近刚刚被访问的数据，会很快再次被访问。而 Cache 的访问速度远远快于内存，这样，CPU 花在等待内存访问上的时间就大大变短了。</p>
 <p>我就从最基本的<strong>直接映射</strong> Cache（Direct Mapped Cache）为例，来看看整个 Cache 的数据结构和访问逻辑。</p>
 <p>直接映射 Cache 采用的策略，就是确保任何一个<strong>内存块</strong>（Block）的地址，始终映射到一个固定的 CPU Cache 地址（Cache Line）。而这个映射关系，通常用 mod 运算（求余运算）来实现。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/5.png" class="" title="Cache 采用 mod 的方式，把内存块映射到对应的 CPU Cache 中"> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/5.png" class="" title="Cache 采用 mod 的方式，把内存块映射到对应的 CPU Cache 中"> 
 <p>实际计算中，有一个小小的技巧，通常我们会把缓存块的数量设置成 2 的 N 次方。这样在计算取模的时候，可以直接取地址的低 N 位，也就是二进制里面的后几位。比如这里的 8 个缓存块，就是 2 的 3 次方。那么，在对 21 取模的时候，可以对 21 的 2 进制表示 10101 取地址的低三位，也就是 101，对应的 5，就是对应的缓存块地址。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/6.png" class=""> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/6.png" class=""> 
 <p>因此，当处理器需要访问一个地址时，会先在高速缓冲存储器中进行查找，查找过程中我们首先在概念上把这个地址划分成三个部分：</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/7.jpg" class=""> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/7.jpg" class=""> 
 <h3 id="直接映射"><a href="#直接映射" class="headerlink" title="直接映射"></a>直接映射</h3><p>在<strong>直接映射</strong>中，因为每个 set 对应 1 个 line，所以 set index 的位数就会较多（和之后的多路映射对比）。具体的检索过程就是先通过 set index 确定哪个 set，然后看是否 valid，然后比较那个 set 里唯一 line 的 tag 和地址的 t bits 是否一致，就可以确定是否缓存命中。命中之后根据 block offset 确定偏移量。如果 tag 不匹配的话，这行会被扔掉并放新的数据进来。</p>
-<img src="/2020/02/03/5%20%E5%86%85%E5%AD%98/8.jpg" class=""> 
+<img src="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/8.jpg" class=""> 
 <p>对于 4 位地址，对应 Block = 2，Set = 4，Line = 1 </p>
 <ul>
 <li><code>0 00 0</code>, miss</li>
@@ -219,7 +442,7 @@
   </entry>
   <entry>
     <title>4 流水线指令设计</title>
-    <url>/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/</url>
+    <url>/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/</url>
     <content><![CDATA[<p>上一章我们计算机中的指令系统，重点介绍了传送指令、流程控制和过程调用，了解了在高级语言如何转化为汇编语言来指导计算机工作。</p>
 <p>这一章会为大家介绍计算机中<strong>流水线指令系统设计</strong>，介绍一下计算机如何<strong>「更快」</strong>地执行，也会介绍如何去解决流水线处理器中的<strong>冒险</strong>。</p>
 <a id="more"></a>
@@ -242,30 +465,30 @@
 </ul>
 </li>
 </ol>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/1.jpeg" class="" title="不同步骤在不同组件之内完成"> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/1.jpeg" class="" title="不同步骤在不同组件之内完成"> 
 <p>样的步骤，其实就是一个永不停歇的循环，我们把这个循环称之为<strong>指令周期</strong>（Instruction Cycle）。</p>
 <h3 id="机器周期"><a href="#机器周期" class="headerlink" title="机器周期"></a>机器周期</h3><p>例如，取指令、读写存储器等，这每一项工作称为一个基本操作。完成一个基本操作所需要的时间称为<strong>机器周期</strong>（Machine Cycle）或<strong>CPU周期</strong>。</p>
 <h3 id="时钟周期"><a href="#时钟周期" class="headerlink" title="时钟周期"></a>时钟周期</h3><p><strong>时钟周期</strong>也称为振荡周期，定义为时钟频率的倒数。时钟周期是计算机中最基本的、最小的时间单位。在一个时钟周期内，CPU仅完成一个最基本的动作。</p>
 <p>一个 CPU 周期，通常会由几个时钟周期累积起来。一个 CPU 周期的时间，就是这几个时钟周期的总和。对于一个指令周期来说，我们取出一条指令，然后执行它，至少需要两个 CPU 周期。取出指令至少需要一个 CPU 周期，执行至少也需要一个 CPU 周期，复杂的指令则需要更多的 CPU 周期。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/2.jpeg" class="" title="三个周期（Cycle）之间的关系"> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/2.jpeg" class="" title="三个周期（Cycle）之间的关系"> 
 <h2 id="流水线概述"><a href="#流水线概述" class="headerlink" title="流水线概述"></a>流水线概述</h2><h3 id="单周期处理的局限"><a href="#单周期处理的局限" class="headerlink" title="单周期处理的局限"></a>单周期处理的局限</h3><p>对于单指令周期处理器（Single Cycle Processor）而言，在一个时钟周期内，处理器正好能处理一条指令。不过，我们的时钟周期是固定的，但是指令的电路复杂程度是不同的，随着门电路层数的增加，由于门延迟的存在，位数多、计算复杂的指令需要的执行时间会更长，所以<strong>实际一条指令执行的时间是不同的</strong>。</p>
 <p>不同指令的执行时间不同，但是我们需要让所有指令都在一个时钟周期内完成，那就只好把时钟周期和执行时间最长的那个指令设成一样。这就好比学校体育课 1000 米考试，我们要给这场考试预留的时间，肯定得和跑得最慢的那个同学一样。因为就算其他同学先跑完，也要等最慢的同学跑完间，我们才能进行下一项活动。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/3.jpeg" class="" title="单周期处理器的指令周期"> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/3.jpeg" class="" title="单周期处理器的指令周期"> 
 <h3 id="流水线的基本原理"><a href="#流水线的基本原理" class="headerlink" title="流水线的基本原理"></a>流水线的基本原理</h3><p>我们对于不同的指令步骤，所用的电路模块也是不同。因此我们可以让每一个阶段的电路在完成对应的任务之后，也不需要等待整个指令执行完成，而是可以直接执行下一条指令的对应阶段。这样的协作模式，就是我们所说的<strong>流水线</strong>。这里面每一个独立的步骤，我们就称之为<strong>流水线阶段</strong>或者流水线级（Pipeline Stage）。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/4.jpeg" class="" title="流水线执行示意图"> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/4.jpeg" class="" title="流水线执行示意图"> 
 <p>流水线中的各个处理部件可并行工作，从而可使<strong>整个程序</strong>的执行时间缩短，但并不会缩短单条指令的执行时间，甚至会增加时间（流水线寄存器），而是提高了<strong>CPU的吞吐率</strong>。</p>
 <h3 id="超长流水线的性能瓶颈"><a href="#超长流水线的性能瓶颈" class="headerlink" title="超长流水线的性能瓶颈"></a>超长流水线的性能瓶颈</h3><p>对于较为复杂的指令，我们可将其拆分成更多的步骤，分为更多的流水线阶段，提高CPU的<strong>吞吐率</strong>。但是增加流水线的深度，会导致性能成本的问题。</p>
 <p>时钟周期的衡量，不再是指令级别的，而是<strong>流水线阶段</strong>级别的。每一级流水线对应的输出，都要放到<strong>流水线寄存器</strong>（Pipeline Register）里面，然后在下一个时钟周期，交给下一个<strong>流水线阶段</strong>去处理。所以，每增加一级的流水线，就要多一级写入到流水线寄存器的操作。虽然流水线寄存器非常快，比如只有 20 ps。</p>
 <p>但是，如果我们不断加深流水线，这些操作占整个指令的执行时间的比例就会不断增加。最后，我们的性能瓶颈就会出现在这些单条指令的延迟上。这也就意味着，单纯地增加流水线级数，不仅不能提升性能，反而会有更多的无谓损失。所以，设计合理的流水线级数也是现代 CPU 中非常重要的一点。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/5.jpeg" class=""> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/5.jpeg" class=""> 
 <h2 id="流水线的「冒险」"><a href="#流水线的「冒险」" class="headerlink" title="流水线的「冒险」"></a>流水线的「冒险」</h2><p>流水线优质这样一种情况，在下一个时钟周期中下一条指令不能执行。这种情况称为<strong>冒险</strong>（Hazard）。下面我们介绍三种流水线冒险。</p>
 <h3 id="结构冒险"><a href="#结构冒险" class="headerlink" title="结构冒险"></a>结构冒险</h3><p><strong>结构冒险</strong>（structural hazard）本质上是一个硬件层面的资源竞争问题。即硬件不支持多条指令在同一时钟周期执行。</p>
 <p>例如流水线结构只有一个存储器，因此只能在一个时钟周期里面读取一条数据，没办法同时执行第 1 条指令的读取内存数据和第 4 条指令的读取指令代码。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/6.jpeg" class=""> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/6.jpeg" class=""> 
 <h4 id="增加资源"><a href="#增加资源" class="headerlink" title="增加资源"></a>增加资源</h4><p>解决方案的本质就是<strong>增加资源</strong>。对于访问内存数据和取指令的冲突，一个直观的解决方案就是把我们的内存分成两部分，让它们各有各的地址译码器。这两部分分别是存放指令的<strong>程序内存</strong>和存放数据的<strong>数据内存</strong>。</p>
 <p>这样把内存拆成两部分的解决方案，在计算机体系结构里叫作<strong>哈佛架构</strong>（Harvard Architecture），来自哈佛大学设计Mark I 型计算机时候的设计。对应的，我们之前说的<strong>冯·诺依曼体系结构</strong>，又叫作普林斯顿架构（Princeton Architecture）。</p>
 <p>不过，我们今天使用的 CPU，仍然是冯·诺依曼体系结构的，并没有把内存拆成程序内存和数据内存这两部分。因为如果那样拆的话，对程序指令和数据需要的内存空间，我们就没有办法根据实际的应用去动态分配了。虽然解决了资源冲突的问题，但是也失去了灵活性。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/7.jpeg" class=""> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/7.jpeg" class=""> 
 <p>不过，借鉴了哈佛结构的思路，现代的 CPU 虽然没有在内存层面进行对应的拆分，却在 CPU 内部的高速缓存部分进行了区分，把高速缓存分成了<strong>指令缓存</strong>（Instruction Cache）和<strong>数据缓存</strong>（Data Cache）两部分。这个我们之后会介绍。</p>
 <h3 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h3><p><strong>数据冒险</strong>（data hazard）发生在由于一条指令必须等待另一条指令的完成而造成流水线暂停的情况。</p>
 <p>下面我们以两条先后发生的 ADD 指令作为例子，来具体阐述一下：</p>
@@ -277,11 +500,11 @@
 <p>因为后一条的 add 指令，依赖寄存器 t0 里的值。而 t0 里面的值，又来自于前一条指令的计算结果。所以后一条指令，需要等待前一条指令的数据写回阶段完成之后，才能执行。</p>
 <p>于是，我们可以通过<strong>流水线停顿</strong>（Pipeline Stall）来解决这个冒险问题。我们要在第二条指令的译码阶段之后，插入对应的 NOP 指令，直到前一条指令的数据写回完成之后，才能继续执行。</p>
 <p>这样的方案，虽然解决了数据冒险的问题，但是也浪费了两个时钟周期。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/8.jpeg" class=""> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/8.jpeg" class=""> 
 <h4 id="操作数前推"><a href="#操作数前推" class="headerlink" title="操作数前推"></a>操作数前推</h4><p>插入过多的 NOP 操作，意味着我们的 CPU 总是在空转。那么，我们有没有什么办法，尽量少插入一些 NOP 操作呢？</p>
 <p>其实我们第二条指令的执行，未必要等待第一条指令写回完成，才能进行。我们完全可以在第一条指令的执行阶段完成之后，直接将结果数据传输给到下一条指令的 ALU。作为输入，那我们的第二条指令，就不用再从寄存器里面，把数据再单独读出来一次，才来执行代码。</p>
 <p>在 CPU 的硬件里面，单独拉一根信号传输的线路出来，使得 ALU 的计算结果，能够重新回到 ALU 的输入里来。这样的一条线路，就是我们的<strong>旁路</strong>（Bypassing）。它跳过了写入寄存器，再从寄存器读出的过程，也为我们节省了 2 个时钟周期。</p>
-<img src="/2020/02/02/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/9.jpeg" class=""> 
+<img src="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/9.jpeg" class=""> 
 <h3 id="控制冒险"><a href="#控制冒险" class="headerlink" title="控制冒险"></a>控制冒险</h3><p><strong>控制冒险</strong>（control hazard）由于决策依赖于一条指令的结果，而其他指令正在执行中。</p>
 <p>在遇到了控制冒险之后，我们的 CPU 除了流水线停顿，等待前面的指令执行完成之后，再去取最新的指令，还有什么好办法吗？</p>
 <h4 id="分支预测"><a href="#分支预测" class="headerlink" title="分支预测"></a>分支预测</h4><p>最简单的分支预测技术，叫作<strong>「假装分支不发生」</strong>。顾名思义，自然就是仍然按照顺序，把指令往下执行。其实就是 CPU 预测，条件跳转一定不发生。这样的预测方法，其实也是一种<strong>静态预测技术</strong>。就好像猜硬币的时候，你一直猜正面，会有 50% 的正确率。</p>
@@ -307,7 +530,7 @@
   </entry>
   <entry>
     <title>3 指令系统</title>
-    <url>/2020/02/01/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/</url>
+    <url>/2020/02/01/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/</url>
     <content><![CDATA[<p>上一章我们介绍了计算机中信息的表示，重点介绍了浮点数和补码。</p>
 <p>这一章会为大家介绍计算机中<strong>指令系统</strong>，重点介绍<strong>汇编语言</strong>。</p>
 <a id="more"></a>
@@ -355,7 +578,7 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span> <span class="params">( <span class="keyword">int</span> x, <span class="keyword">int</span> y )</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> x+y;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">caller</span> <span class="params">( )</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">int</span> t1 = <span class="number">125</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	<span class="keyword">int</span> t2 = <span class="number">80</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	<span class="keyword">int</span> sum = add (t1, t2);</span></pre></td></tr><tr><td class="code"><pre><span class="line">	<span class="keyword">return</span> sum;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
 <p>汇编如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">caller：</span></pre></td></tr><tr><td class="code"><pre><span class="line">	pushl %rbp					&#x2F;* 准备阶段 *&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl  %rsp, %rbp</span></pre></td></tr><tr><td class="code"><pre><span class="line">	subl $24, %rsp</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl $125, -12(%rbp)		&#x2F;* 分配局部变量 *&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl $80, -8(%rbp)</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl -8(%rbp), %rax			&#x2F;* 准备入口参数 *&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl %rax, 4(%rsp)</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl -12(%rbp), %rax</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl %rax, (%rsp)</span></pre></td></tr><tr><td class="code"><pre><span class="line">	call add					&#x2F;* 返回参数在 %rax 中*&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl %rax, -4(%rbp)			&#x2F;* 准备返回参数 *&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	movl -4(%rbp), %rax</span></pre></td></tr><tr><td class="code"><pre><span class="line">	leave						&#x2F;* 结束 *&#x2F;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	ret</span></pre></td></tr></table></figure>
-<img src="/2020/02/01/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/1.png" class="" title="过程调用栈示意图"> 
+<img src="/2020/02/01/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/1.png" class="" title="过程调用栈示意图"> 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章介绍了<strong>指令系统</strong>，介绍了传送、流程、过程这几种汇编语言指令，了解了高级语言到较为底层语言的过程。</p>
 <p>下一章将为大家带来<strong>流水线处理器指令设计</strong>，介绍一下CPU是如何<strong>「同时」</strong>进行多项任务的。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
@@ -376,7 +599,7 @@
   </entry>
   <entry>
     <title>2 信息的表示与处理</title>
-    <url>/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/</url>
+    <url>/2020/01/31/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/</url>
     <content><![CDATA[<p>上一章我们介绍了计算机的基本硬件组成，让我们对计算机大致有一个了解。</p>
 <p>这一章会为大家介绍计算机中信息的表示，有些也是之前学到的，比如二进制的计算。将重点介绍<strong>无符号</strong>（unsigned）、<strong>带符号</strong>、<strong>浮点数</strong>（floating-point）这三种编码方式。</p>
 <p>当然溢出和浮点数特殊的编码方式也会产生与预期不一样的结果，我们也会介绍。</p>
@@ -582,7 +805,7 @@ V = (-1)^s*M*2^E</script><ul>
 </li>
 </ul>
 <p>对于不同的格式，也有不同的编码结构，如下图所示：</p>
- <img src="/2020/01/31/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/1.jpg" class="" title="标准浮点格式"> 
+ <img src="/2020/01/31/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2%20%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA/1.jpg" class="" title="标准浮点格式"> 
 <h3 id="数字示例"><a href="#数字示例" class="headerlink" title="数字示例"></a>数字示例</h3><p>下面假定8位浮点数，其中有 $k=4$ 的阶码位和 $n=3$ 的小数位。偏移量为 $2^{4-1}-1=7$ 。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    s exp  frac   E   值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 000   -6   0   # 这部分是非规范化数值，下一部分是规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 001   -6   1&#x2F;8 * 1&#x2F;64 &#x3D; 1&#x2F;512 # 能表示的最接近零的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 010   -6   2&#x2F;8 * 1&#x2F;64 &#x3D; 2&#x2F;512 </span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 110   -6   6&#x2F;8 * 1&#x2F;64 &#x3D; 6&#x2F;512</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0000 111   -6   7&#x2F;8 * 1&#x2F;64 &#x3D; 7&#x2F;512 # 能表示的最大非规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0001 000   -6   8&#x2F;8 * 1&#x2F;64 &#x3D; 8&#x2F;512 # 能表示的最小规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0001 001   -6   9&#x2F;8 * 1&#x2F;64 &#x3D; 9&#x2F;512</span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0110 110   -1   14&#x2F;8 * 1&#x2F;2 &#x3D; 14&#x2F;16</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0110 111   -1   15&#x2F;8 * 1&#x2F;2 &#x3D; 15&#x2F;16 # 最接近且小于 1 的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 000    0   8&#x2F;8 * 1 &#x3D; 1</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 001    0   9&#x2F;8 * 1 &#x3D; 9&#x2F;8      # 最接近且大于 1 的值</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 0111 010    0   10&#x2F;8 * 1 &#x3D; 10&#x2F;8</span></pre></td></tr><tr><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1110 110    7   14&#x2F;8 * 128 &#x3D; 224</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1110 111    7   15&#x2F;8 * 128 &#x3D; 240   # 能表示的最大规范化值</span></pre></td></tr><tr><td class="code"><pre><span class="line">------------------------------------------------------------------</span></pre></td></tr><tr><td class="code"><pre><span class="line">    0 1111 000   n&#x2F;a  无穷               # 特殊值</span></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章介绍了不同编码方式表示不同的数据，重点介绍了<strong>补码</strong>、<strong>浮点数</strong>。</p>
@@ -605,7 +828,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>1 计算机基本结构</title>
-    <url>/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/</url>
+    <url>/2020/01/30/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/</url>
     <content><![CDATA[<p>本章将介绍计算机的基本硬件，以让大家对计算机大致框架有所了解，这些硬件都要完成以下功能：输入数据、输出数据、处理数据和存储数据。</p>
 <a id="more"></a>
 <h2 id="计算机的基本硬件组成"><a href="#计算机的基本硬件组成" class="headerlink" title="计算机的基本硬件组成"></a>计算机的基本硬件组成</h2><ol>
@@ -633,7 +856,7 @@ V = (-1)^s*M*2^E</script><ul>
 <li><p>内部以<strong>二进制表示</strong>指令和数据。每条指令由操作码和地址码两部分组成。操作码指出操作类型，地址码指出操作数的地址。由一串指令组成程序。</p>
 </li>
 <li><p>采用<strong>存储程序</strong>工作方式。 </p>
-<img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/1.jpeg" class="" title="冯·诺依曼体系结构示意图"> 
+<img src="/2020/01/30/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/1.jpeg" class="" title="冯·诺依曼体系结构示意图"> 
 </li>
 </ol>
 <h2 id="计算机执行指令的过程"><a href="#计算机执行指令的过程" class="headerlink" title="计算机执行指令的过程"></a>计算机执行指令的过程</h2><ol>
@@ -657,7 +880,7 @@ V = (-1)^s*M*2^E</script><ul>
 </ul>
 </li>
 </ol>
-<img src="/2020/01/30/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/2.png" class="" title="计算机结构的简化模型"> 
+<img src="/2020/01/30/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/2.png" class="" title="计算机结构的简化模型"> 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章内容相对简单，介绍了计算机的基本硬件组成、冯·诺依曼体系结构、每个基本硬件的主要功能以及计算机执行指令的过程，让大家对计算机基本组成以及功能有所了解。</p>
 <p>下一章将为大家带来指引计算机中<strong>信息的表示与处理</strong>，来看看计算机是如何用0和1来记录信息的。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
@@ -678,7 +901,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>我的2019年个人总结</title>
-    <url>/2020/01/01/%E6%88%91%E7%9A%842019%E5%B9%B4%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/</url>
+    <url>/2020/01/01/%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/%E6%88%91%E7%9A%842019%E5%B9%B4%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>大家好呀。在此记录一下我的2019年个人总结。</p>
 <a id="more"></a>
 <h2 id="个人管理"><a href="#个人管理" class="headerlink" title="个人管理"></a>个人管理</h2><p>个人管理分为身体管理、精力管理以及财务管理。</p>
@@ -707,7 +930,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>我的2018年个人总结</title>
-    <url>/2018/12/31/2018%E6%80%BB%E7%BB%93/</url>
+    <url>/2018/12/31/%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/2018%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>在此向朋友们分享一下我的2018年。</p>
 <a id="more"></a>
 <p>上半年处于低谷期。我是个理想主义者，曾坚信一点：这个世界是美好的，每个人都有基本的道德底线。纵使社会有许多不公，我们依然有法律作为最后的武器。但是上半年各种事件的冲击，使我对此产生了怀疑。</p>
@@ -742,7 +965,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「重庆森林」简评</title>
-    <url>/2018/12/03/%E3%80%8C%E9%87%8D%E5%BA%86%E6%A3%AE%E6%9E%97%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2018/12/03/%E7%AE%80%E8%AF%84/%E3%80%8C%E9%87%8D%E5%BA%86%E6%A3%AE%E6%9E%97%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>许久不见，这次聊聊王家卫导演的「重庆森林」后半部分王菲与梁朝伟之间的故事。</p>
 <a id="more"></a>
 <p>王家卫导演的电影中爱情总是一条主线，他电影中的主角总会做一些「不合乎逻辑」的事，这也是我之前不那么中意王家卫导演的原因。在我的电影观里，逻辑才是评判一部电影的标准。</p>
@@ -767,7 +990,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「狐步舞」简评</title>
-    <url>/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/</url>
+    <url>/2018/07/03/%E7%AE%80%E8%AF%84/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>有这样一种舞蹈，不论从哪里开始，永远都会回到同样的起点。</p>
 <a id="more"></a>
 <h2 id="第一幕"><a href="#第一幕" class="headerlink" title="第一幕"></a>第一幕</h2><p>在以色列，一个平静的中产家庭迎来几位军人的到访。母亲率先察觉到异样，昏厥倒地。父亲看着他们麻利地拿出注射器，给妻子来了一发镇定剂。接着他们宣布一个消息：在外服役的长子牺牲了。</p>
@@ -782,14 +1005,14 @@ V = (-1)^s*M*2^E</script><ul>
 <h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>在军车上，儿子画完了最后一幅画，那是一辆高举着轿车的推土机。这时，路面上出现了那只悠闲的骆驼，司机躲闪不及，车辆坠入崖中。</p>
 <hr>
 <p>这是一部战争片。有趣的是这部电影出奇地克制，不同于一般印象中战争电影的固有形象，片中没有对战争的强烈表现或对英雄的过分渲染。</p>
- <img src="/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/1.jpg" class=""> 
+ <img src="/2018/07/03/%E7%AE%80%E8%AF%84/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/1.jpg" class=""> 
 <p>驻守边疆的四名年轻士兵，任务就是筛查来往的一切车辆，消遣着每日时光。湛蓝的天空映衬着无垠的荒原，色彩艳丽的涂鸦点缀着独舞士兵的孤寂内心，没有丝毫战争的痕迹。</p>
 <p>直到第一声枪响，观众的思绪才被拽回到现实。宁可错杀一千也不放过一个，即便对方是互有好感的年轻女郎，士兵也会抛下画笔端起机枪，屠尽眼前的一切。</p>
 <p>片中还有另一个描写战争的细节，在军方慰问家属时，其「专业性」令人胆寒。在家国大义面前丧子之痛似乎显得微不足道，悲痛也就见怪不怪了。</p>
 <hr>
 <p>片中有三段狐步舞，分别是第一幕的养老院老人；第二幕的年轻士兵；第三幕的共舞夫妻，分别对应着各自的孤独，宿命的。</p>
 <p>这部电影的主角是父亲。但没有太多对父亲过去的刻画，这也就为观众解读提供发挥空间。父亲像是一个摒弃世俗的利己主义者，会做出任何有利于自己的事情。父亲年轻时也是校园中的风云人物，似乎是这种众星捧月的虚荣会让他去拿传家宝来换取色情杂志。在战役胜利回程的路上，他才会让战友带队引路。</p>
-<img src="/2018/07/03/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/2.jpg" class="">
+<img src="/2018/07/03/%E7%AE%80%E8%AF%84/%E7%8B%90%E6%AD%A5%E8%88%9E%E7%AE%80%E8%AF%84/2.jpg" class="">
 <p>光鲜亮丽的外表，都是掩饰自己脆弱的秘密。</p>
 <p>家人都深知自己的脆弱，他们陪着自己的伤口生活，让自己显得坚强。亲情是他最后的防线。这也是为什么在得知儿子「去世」的第一时间他会选择通知自己的母亲，也是为什么在得知儿子存活的第一时间选择让儿子回到自己身边，而这种对儿子的保护恰恰成为害死他的缘由。</p>
 <p>影片的最后，妻子盯着儿子最后的那幅画说：你是那辆推土机，我是那辆轿车。</p>
@@ -807,7 +1030,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「血观音」简评</title>
-    <url>/2018/05/23/%E3%80%8C%E8%A1%80%E8%A7%82%E9%9F%B3%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2018/05/23/%E7%AE%80%E8%AF%84/%E3%80%8C%E8%A1%80%E8%A7%82%E9%9F%B3%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>最近观看了去年台湾金马奖的两大热门：「大佛普拉斯」与「血观音」。两者都是讲述台湾本土故事，如果说前者是道出底层人口的无可奈何，那么后者则是深刻剖析上层权贵的尔虞我诈。</p>
 <a id="more"></a>
 <p>「血观音」最吸引人的地方莫过于散落片中角落的细节拼图，通过对这些细节的拼凑，看清这些拼图的真相。暴力象征的<strong>血</strong>与慈眉善目的<strong>观音</strong>相结合，展现出权术更迭中无尽的修罗场，令人窒息的黑暗。</p>
@@ -828,7 +1051,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>我的2017年个人总结</title>
-    <url>/2017/12/31/2017%E6%80%BB%E7%BB%93/</url>
+    <url>/2017/12/31/%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/2017%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>年终总结，既是对一年的回顾，又是对未来的展望。</p>
 <a id="more"></a>
 <p>先说一下完成的大事，年初本以为达不成这个目标，没想到最终顺利完成。过程也很曲折，柳暗花明，说好听点是学业上又步入了一个阶段，说难听点就是为自己的胆小怯弱又找到了三年的缓冲期。不过我很期待新的生活。</p>
@@ -861,7 +1084,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「喜丧」简评</title>
-    <url>/2017/12/27/%E3%80%8C%E5%96%9C%E4%B8%A7%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2017/12/27/%E7%AE%80%E8%AF%84/%E3%80%8C%E5%96%9C%E4%B8%A7%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>「喜丧」获得第10届FIRST青年电影展最佳影片和最佳导演，前几天观看了这部电影。</p>
 <a id="more"></a>
 <p>农村85岁老人含辛茹苦拉扯大六个孩子，到老来却难享天伦之乐，在突发脑血栓后，子女们纷纷想把老人送去敬老院。在子女轮流照看老人期间，发生了许多令人寒心的事情。</p>
@@ -888,7 +1111,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「芳华」简评</title>
-    <url>/2017/12/21/%E3%80%8C%E8%8A%B3%E5%8D%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2017/12/21/%E7%AE%80%E8%AF%84/%E3%80%8C%E8%8A%B3%E5%8D%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>简评主要关注其电影本身而非议论揣测。</p>
 <a id="more"></a>
 <p>前几天有幸在平遥国际电影展上观摩了这部电影。虽然在寒风中冻了四个小时，但是整体观影体验不错，最出彩的就是那饱受争议的6分钟长镜头，写实程度在国内战争片中极为罕见。 </p>
@@ -910,7 +1133,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「大护法」简评</title>
-    <url>/2017/07/17/%E3%80%8C%E5%A4%A7%E6%8A%A4%E6%B3%95%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2017/07/17/%E7%AE%80%E8%AF%84/%E3%80%8C%E5%A4%A7%E6%8A%A4%E6%B3%95%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>近期写简评极少，毕竟作为一个专业的段子手影评人，一定要对自己推荐的每一部电影负责。</p>
 <a id="more"></a>
 <p>昨天去看了「大护法」，相比于同期院线热门电影来说，这部电影的关注度真的少得可怜。偌大的影院只有我一个人，影片结束后工作人员直接赶我走，都不给一个看彩蛋的机会。同样地，与前几年国产电影保护月的国漫相比也是相形见绌，两年前的国产动漫里程碑「大圣归来」催生一批自来水军，一年前号称「十二年磨一剑」的「大鱼海棠」即使毁誉参半，但是不乏一些女粉的追捧。</p>
@@ -940,7 +1163,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「一念无明」简评</title>
-    <url>/2017/04/29/%E3%80%8C%E4%B8%80%E5%BF%B5%E6%97%A0%E6%98%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2017/04/29/%E7%AE%80%E8%AF%84/%E3%80%8C%E4%B8%80%E5%BF%B5%E6%97%A0%E6%98%8E%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>好久没写简评了，一是因为最近没有值得推荐的电影，二是因为我太懒了。</p>
 <a id="more"></a>
 <p>最近抽出时间去看了这部默默无闻的电影——「一念无明」。其实这部电影并不是表面上这样默默无闻，它在刚刚过去的「第36届香港电影金像奖」 中获得八项提名，斩获了「最佳男配角」、「最佳女配角」和「新晋导演」这三个奖项。</p>
@@ -971,7 +1194,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「我不是潘金莲」简评</title>
-    <url>/2017/04/29/%E3%80%8C%E6%88%91%E4%B8%8D%E6%98%AF%E6%BD%98%E9%87%91%E8%8E%B2%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2017/04/29/%E7%AE%80%E8%AF%84/%E3%80%8C%E6%88%91%E4%B8%8D%E6%98%AF%E6%BD%98%E9%87%91%E8%8E%B2%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>「我不是潘金莲」的上映真的是一波三折，从一开始的中秋档到国庆档，最后到「史上最强十一月档」，无数人都在猜疑是不是因为审查的问题，而冯导也屡次强调并没有这么一说。</p>
 <a id="more"></a>
 <p>很多朋友觉得这部电影单纯讲当官不为民做主的贪官污吏，但是看过原著之后发现，里面几乎没有对贪污受贿的描写，只是一群整天想着为了自己的目的而妄自猜疑别人心思的人，包括李雪莲。（原著中她其实并不是作为一个正面人物存在）</p>
@@ -992,7 +1215,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>我的2016年个人总结</title>
-    <url>/2016/12/31/2016%E6%80%BB%E7%BB%93/</url>
+    <url>/2016/12/31/%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/2016%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>以前从未写过任何年终总结，一是觉得写这个略显侨情，二是对自己记忆力比较自负，一年里的事都可以记下来，没有必要另作总结。</p>
 <a id="more"></a>
 <p>但是，我自己都没有想到这一年会经历这么多分分合合。所以，我想记录下一些事情，与大家分享。</p>
@@ -1028,7 +1251,7 @@ V = (-1)^s*M*2^E</script><ul>
   </entry>
   <entry>
     <title>「比利林恩的中场战事」简评</title>
-    <url>/2016/12/31/%E3%80%8C%E6%AF%94%E5%88%A9%E6%9E%97%E6%81%A9%E7%9A%84%E4%B8%AD%E5%9C%BA%E6%88%98%E4%BA%8B%E3%80%8D%E7%AE%80%E8%AF%84/</url>
+    <url>/2016/12/31/%E7%AE%80%E8%AF%84/%E3%80%8C%E6%AF%94%E5%88%A9%E6%9E%97%E6%81%A9%E7%9A%84%E4%B8%AD%E5%9C%BA%E6%88%98%E4%BA%8B%E3%80%8D%E7%AE%80%E8%AF%84/</url>
     <content><![CDATA[<p>之前听说北美口碑扑街了，所以看之前也没有抱太大期望。然而观影结果却出人意料地好，就单从饱受争议的剧情方面来说，这也不乏是一部大作。</p>
 <a id="more"></a>
 <p>故事采用闪回方式，这种方式在现在的电影中屡见不鲜，就连制作简单的美剧也采用过，所以这个没有什么好谈的。</p>
