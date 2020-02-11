@@ -48,20 +48,20 @@
 <li><strong>周转时间</strong>（Turnaround Time）：$ T_{turnaround} = T_{completion}-T_{arrival} $</li>
 <li><strong>响应时间</strong>（Response Time）：$T_{response}=T_{firstrun}-T_{arrival}$</li>
 </ul>
-<h3 id="先来先服务（First-In-First-Out）"><a href="#先来先服务（First-In-First-Out）" class="headerlink" title="先来先服务（First In, First Out）"></a>先来先服务（First In, First Out）</h3><p>有三个任务A、B、C几乎同时到达（$T_A&lt;T_B&lt;T_C$）。</p>
+<h3 id="先来先服务（First-In-First-Out-FIFO）"><a href="#先来先服务（First-In-First-Out-FIFO）" class="headerlink" title="先来先服务（First In, First Out, FIFO）"></a>先来先服务（First In, First Out, FIFO）</h3><p>有三个任务A、B、C几乎同时到达（$T_A&lt;T_B&lt;T_C$）。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/3.png" class="" title="FIFO 简单例子"> 
 <p>从上图我们可以看出，A 于 10 结束，B 于 20 结束，C 于 30 结束。因此其平均周转时间为 $\frac{10+20+30}{3}=20$.</p>
 <p>下面，我们舍弃第一条假设（每个任务运行相同时间），还是刚才那三个任务，只不过 A 运行 100 秒，B、C 分别运行 10 秒。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/4.png" class="" title="FIFO 为什么不是最优解"> 
 <p>由此可见，A 任务要整整运行 100 秒，才可以轮到 B 任务。其平均周转时间也高达 $\frac{100+110+120}{3}=110$.</p>
 <p>这种现象称为<strong>车队效应</strong>（Convey effect），有点类似在现实生活中，你在超市排队时，前面的人买了三车食品的样子。</p>
-<h3 id="最短作业优先（Shortest-Job-First）"><a href="#最短作业优先（Shortest-Job-First）" class="headerlink" title="最短作业优先（Shortest Job First）"></a>最短作业优先（Shortest Job First）</h3><p>之前在宜家购物的时候，有一个专门的购物通道是为小件商品用户提供的，这也是 SJF 调度算法的策略。</p>
+<h3 id="最短作业优先（Shortest-Job-First-SJF）"><a href="#最短作业优先（Shortest-Job-First-SJF）" class="headerlink" title="最短作业优先（Shortest Job First, SJF）"></a>最短作业优先（Shortest Job First, SJF）</h3><p>之前在宜家购物的时候，有一个专门的购物通道是为小件商品用户提供的，这也是 SJF 调度算法的策略。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/5.png" class="" title="SJF 简单例子"> 
 <p>同样是 A、B、C 几乎同时到达。但是由于 B 任务较 A 任务较短。因此其平均周转时间为 $\frac{10+20+120}{3}=50$.缩短了很多。</p>
 <p>这时，我们舍弃第二条假设（所有任务同时到达）。此时假设 A 任务于 $t =0$ 时刻到达且运行 100 秒，而 B、C 任务于 $t =10$ 时刻到达且运行 10 秒。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/6.png" class="" title="当 B、C 稍晚到达 SJF 调度算法"> 
 <p>此时的平均周转时间为 $\frac{100+(110-20)+(120-10)}{3}=103.33$.</p>
-<h3 id="最短时间完成优先（Shortest-Time-to-Completion）"><a href="#最短时间完成优先（Shortest-Time-to-Completion）" class="headerlink" title="最短时间完成优先（Shortest Time-to-Completion）"></a>最短时间完成优先（Shortest Time-to-Completion）</h3><p>现在我们舍弃第三条假设（一旦启动，每个任务运行到结束），使调度程序成为<strong>抢占型</strong>（Preemptive），可以切换上下文（Context switch），暂停运行任务，转而运行其他任务。因此 STCF 中会抢占 A 任务以让 B、C 任务运行，直到后者运行结束后才会继续运行 A 任务。</p>
+<h3 id="最短时间完成优先（Shortest-Time-to-Completion-STC）"><a href="#最短时间完成优先（Shortest-Time-to-Completion-STC）" class="headerlink" title="最短时间完成优先（Shortest Time-to-Completion, STC）"></a>最短时间完成优先（Shortest Time-to-Completion, STC）</h3><p>现在我们舍弃第三条假设（一旦启动，每个任务运行到结束），使调度程序成为<strong>抢占型</strong>（Preemptive），可以切换上下文（Context switch），暂停运行任务，转而运行其他任务。因此 STCF 中会抢占 A 任务以让 B、C 任务运行，直到后者运行结束后才会继续运行 A 任务。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/7.png" class="" title="STCF 简单示例"> 
 <p>此时的平均周转时间为 $\frac{(120-0)+(20-10)+(30-10)}{3}=50$.</p>
 <p>由于现代计算机采用时分技术，用户更希望能够与操作系统发生交互。因此<strong>响应时间</strong>也是衡量调度算法的关键。上述例子中，A 的响应时间为 0，B 为 0，C 为 10，平均响应时间为$\frac{0+0+10}{3}=3.33$.</p>
@@ -76,6 +76,40 @@
 <p>假设 A、B 任务都在 CPU 上运行 50ms，但 A 任务每运行 10ms 时，会发起一次 I/O 请求。下图为两种不同的调度算法。</p>
 <img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/9.png" class=""> 
 <p>A 任务会分成 5 个 10ms 的子任务。我们可以把子任务当作独立的任务，当系统开始运行时，有 10ms A 与 50ms B，采用 STCF 调度，毫无疑问选择 A 任务。当第一个子任务完成时，CPU 上只剩下 B 任务，因此开始运行。当新的子任务提交后，A 会抢占 B运行 10ms。由此会产生交叠（Overlap），使 CPU 利用率最大化。</p>
+<h2 id="多级反馈队列"><a href="#多级反馈队列" class="headerlink" title="多级反馈队列"></a>多级反馈队列</h2><p>在上一节中，我们还留下了最后一个假设：已知每个任务的运行时间。显然在实际情况中我们并不知道每个任务的具体运行时间。这就带来了我们本节的内容：<strong>多级反馈队列</strong>（Multi-level Feed-back Queue, MLFQ）。</p>
+<h3 id="基本准则"><a href="#基本准则" class="headerlink" title="基本准则"></a>基本准则</h3><p>MLFQ 有很多独立的<strong>队列</strong>（queue），每个队列都有不同的<strong>优先级</strong>（priority level）。每个任务在各自的队列运行，有高优先级的任务优先运行。由此，带来两个准则：</p>
+<ul>
+<li>如果 A 的优先级大于 B，那么只有 A 运行。</li>
+<li>如果 A、B 优先级相同，则 A、B 采取 RR 运行。</li>
+</ul>
+<p>因此，如何确定每个任务的优先级成为关键。</p>
+<h3 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h3><p>每个任务的优先级应当取决于其表现，对于时刻「霸占」 CPU 的长任务，应当降低其优先级，而对于「主动放弃」CPU 的交互任务，我们应当给予它一定特权。由此，得出下面准则：</p>
+<ul>
+<li>当一个任务进入系统时，将其放置在最高优先级（第一队列）。</li>
+<li>如果一个任务耗尽其时间片，降低其优先级；如果一个任务在耗尽时间片前放弃 CPU，保持在当前优先级。</li>
+</ul>
+<h4 id="长任务和短任务"><a href="#长任务和短任务" class="headerlink" title="长任务和短任务"></a>长任务和短任务</h4><p>我们看一个例子：A 任务为长任务，B 任务为短任务。在 A 运行一段时间后，B 任务到达（$T=100$），时间片为 20ms。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/10.png" class=""> 
+<p>由于我们并不知道每个任务的具体运行时间，所以当一个任务到达时，我们先假设它是短任务，于是赋予它最高优先级。如果它真是短任务，那么它会很快结束；如果它不是短任务，那么会降低其优先级。在这个模式下，MLFQ 近似 SJF。</p>
+<h4 id="I-O-交互"><a href="#I-O-交互" class="headerlink" title="I/O 交互"></a>I/O 交互</h4><p>我们再来看看有 I/O 交互的例子。B 任务使用 CPU 1ms 后会进行 I/O 操作。因此在时间片结束之前主动放弃 CPU 的任务会保持在当前优先级。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/11.png" class=""> 
+<h4 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h4><p>我们的方案看似完美，但是也存在不少问题：</p>
+<p>首先，可能会导致<strong>饥饿</strong>（starvation），如果系统中有太多交互任务，那么它们会一直「霸占」 CPU，长任务无法获得 CPU。</p>
+<p>其次，一些恶意程序会<strong>钻调用程序的空子</strong>（ game the scheduler）：在时间片结束前，该任务主动放弃 CPU 进行 I/O 请求，因此它会保持在较高优先级，占用大量 CPU 时间。</p>
+<p>最后，如果一个任务总是改变其状态，长任务可能会变为短任务。</p>
+<h3 id="提升优先级"><a href="#提升优先级" class="headerlink" title="提升优先级"></a>提升优先级</h3><p>为解决饥饿问题，我们可以采用<strong>提升优先级</strong>（boost the priority）的方案：</p>
+<ul>
+<li>在一段时间 $S$ 后，将所有任务提升到系统第一队列。</li>
+</ul>
+<p>新准则解决了两个问题，一是所有进程都不会饥饿，每个任务都有机会处于同一优先级。二是解决了任务状态改变的问题。</p>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/12.png" class=""> 
+<p>左图为没有提升优先级的方案，右图中每 50ms 提升一次优先级。</p>
+<h3 id="更好的计时方式"><a href="#更好的计时方式" class="headerlink" title="更好的计时方式"></a>更好的计时方式</h3><p>我们还剩下最后一个问题：如何避免恶意程序的欺骗。解决方式是使用更好的 CPU 时间计算方案。一旦任务运行完它的时间份额，就会降低其优先级，取代运行时间片的方案：</p>
+<ul>
+<li>一旦任务消耗完其时间份额（而非放弃 CPU 的次数），就会降低它的优先级。</li>
+</ul>
+<img src="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/13.png" class=""> 
+<p>在保护机制下，交互任务也会逐步降低其优先级。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章开始介绍操作系统的第一个特性<strong>虚拟化</strong>，先介绍<strong>进程</strong>的相关概念。接着介绍了进程调度的相关知识。</p>
 <p>下一章将为大家带来<strong>内存管理</strong>的相关知识，看看内存是如何虚拟化的。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
