@@ -276,21 +276,7 @@
                 </span>
             </span>
 
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/02/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
+          <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-file-word-o"></i>
@@ -666,7 +652,6 @@ physical \ address = virtual \ address + base</script><p>进程中使用的内�
 
           </div>
           
-    <div class="comments" id="comments"></div>
 
         </div>
           
@@ -887,33 +872,5 @@ physical \ address = virtual \ address + base</script><p>进程中使用的内�
 
   
 
-
-<script>
-NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
-  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-    var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item => {
-      return GUEST.includes(item);
-    });
-    new Valine({
-      el         : '#valine-comments',
-      verify     : true,
-      notify     : false,
-      appId      : 'Xq8nObhvC6a7vdcHJKlhyxkX-gzGzoHsz',
-      appKey     : 'TgvnIGsp2w9oajSMKHH0PEMD',
-      placeholder: "欢迎评论。",
-      avatar     : 'mm',
-      meta       : guest,
-      pageSize   : '10' || 10,
-      visitor    : false,
-      lang       : '' || 'zh-cn',
-      path       : location.pathname,
-      recordIP   : false,
-      serverURLs : ''
-    });
-  }, window.Valine);
-});
-</script>
 </body>
 </html>
