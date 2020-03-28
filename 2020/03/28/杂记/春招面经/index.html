@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-radar.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"default"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="大家好呀。 受疫情的影响，今年的「金三银四」总有些和往年的不同，几乎所有的面试都转为视频和电话面试。我也通过过去半年的学习，一边投递互联网开发岗位，一边继续学习新的知识。接下来就说一下最近这一个月的面试过程，也算是对自己学习的复盘。">
+<meta name="keywords" content="面经,计算机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="材料人转行互联网的春招面经">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;28&#x2F;%E6%9D%82%E8%AE%B0&#x2F;%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F&#x2F;index.html">
+<meta property="og:site_name" content="吸口好时光">
+<meta property="og:description" content="大家好呀。 受疫情的影响，今年的「金三银四」总有些和往年的不同，几乎所有的面试都转为视频和电话面试。我也通过过去半年的学习，一边投递互联网开发岗位，一边继续学习新的知识。接下来就说一下最近这一个月的面试过程，也算是对自己学习的复盘。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-28T10:49:54.715Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>材料人转行互联网的春招面经 | 吸口好时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="吸口好时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">吸口好时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">读书观影写字</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-books">
+
+    <a href="/books/" rel="section"><i class="fa fa-fw fa-th"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-movies">
+
+    <a href="/movies/" rel="section"><i class="fa fa-fw fa-tags"></i>观影</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Brikarl">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="吸口好时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          材料人转行互联网的春招面经
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-28 11:54:13 / 修改时间：18:49:54" itemprop="dateCreated datePublished" datetime="2020-03-28T11:54:13+08:00">2020-03-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">杂记</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>大家好呀。</p>
+<p>受疫情的影响，今年的「金三银四」总有些和往年的不同，几乎所有的面试都转为视频和电话面试。我也通过过去半年的学习，一边投递互联网开发岗位，一边继续学习新的知识。接下来就说一下最近这一个月的面试过程，也算是对自己学习的复盘。</p>
+<a id="more"></a>
+<p>招聘信息大多来自<a href="https://www.nowcoder.com/" target="_blank" rel="noopener">牛客网</a>，由于有着大三下学期的「夏令营」经验，开启了海投模式。那个时候的简历也是无比粗糙，在「图森未来」的 HR 小姐姐的帮助下，改进了自己的简历，效果也是显著。</p>
+<p>就这样，我收到了一系列笔试和面试。</p>
+<h2 id="阿里搜索推荐中台"><a href="#阿里搜索推荐中台" class="headerlink" title="阿里搜索推荐中台"></a>阿里搜索推荐中台</h2><p>帮我内推的小哥哥相当热情，对我简历也有很正面的评价。即使在飞书面试失利后，也热情地邀请我去他们部门面试。</p>
+<h3 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h3><p>一面距离比较久了，很多记得也不是特别清楚，大多都是问了些死锁、三次握手的一些高频知识点。</p>
+<p>那个时候也是比较紧张，而且那天我的嗓子开始发炎，也有低热的症状，很多知识点答的也没有太多的逻辑可言。后来就是喜闻乐见的做题环节。第一道题目是<strong>判断一颗二叉搜索树</strong>，中序遍历判断是否为升序即可；第二道题目是<strong>判断是否有重复元素</strong>，用 Python 的 Set 可以很容易的解出，但是我那个时候用的是散列表查询。</p>
+<p>总体来说，感觉并不是特别理想，包括反问环节，面试官也没有透露太多的信息。</p>
+<p>后来一周由于发炎高烧的缘故，推掉了很多面试笔试。</p>
+<h3 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h3><p>二面的话面试官相当友善，即使我有些问题回答的不大好，面试官也会友善地说没关系，之后你可以下去看看。问的也是很多基础知识，无外乎也是些高频题目，这里不在赘述。</p>
+<p>问的算法题目也不是很难，第一道是<strong>找出第 K 大的数</strong>，我的回答是新建一个散列表存放前 K 大的元素，随后遍历来比较数组中的每一个元素。但是这样的话开辟新的空间，可以通过快排的思想进行排序，Pivot 前面的数比自己大，后面是数比自己小，当 Pivot 为倒数第 K 个的元素时，那么 Pivot 就是我们要找的数。</p>
+<p>在后来的反问环节，面试官也对我的基础有着比较正面的评价，也嘱咐我多去练习一些项目。总体来说是到目前为止最好的面试体验。</p>
+<h2 id="钉钉"><a href="#钉钉" class="headerlink" title="钉钉"></a>钉钉</h2><p>钉钉是我自己投的简历，可能因为阿里的系统只可以投递一个部门，所以把我上一个投递覆盖掉了，所以上一次的面试也没有了后续。钉钉无疑是目前为止最不理想的面试。</p>
+<h3 id="一面-1"><a href="#一面-1" class="headerlink" title="一面"></a>一面</h3><p>面试官刚上来也没有自我介绍，问了意向的工作地点、实习时间就开始了面试。</p>
+<p>第一道问题是<strong>虚拟内存</strong>，但是那个时候有点儿卡壳，后来才想起来，面试官一直在电话那头说你是不是不知道，也造成了一定干扰。</p>
+<p>面试中问到了<strong>伙伴系统</strong>，恰巧我之前学习过，也说出来其中的原理，但是面试官要求用代码实现，没有答出来。</p>
+<p>后来问到<strong>排序算法</strong>，这部分按照时间复杂度的顺序答了出来。这个时候面试官又问<strong>堆排序</strong>的代码实现，和上道题目一样，只知道原理。</p>
+<p>最后问了一个「剑指 Offer」的<a href="https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/" target="_blank" rel="noopener">第 21 题</a><strong>调整数组顺序使奇数位于偶数前面</strong>，但是那个题目我没有见过（还是刷题太少），要求 O(n) 的时间复杂度和 O(1) 的空间复杂度，一开始我没有理解题目，以为还要求奇数和偶数都要分别排序，和面试官确认题目就浪费了不少时间。但是后来想到了双指针分别查找奇数和偶数的方法，和面试官说了自己的想法后，没想到被否认了，比较可惜。</p>
+<p>后来也没有反问环节，总体还是面试体验不佳。</p>
+<h2 id="飞书"><a href="#飞书" class="headerlink" title="飞书"></a>飞书</h2><h3 id="一面-2"><a href="#一面-2" class="headerlink" title="一面"></a>一面</h3><p>飞书的面试是视频面试，用的是牛客网的面试系统。</p>
+<p>一开始就是我们喜闻乐见的做题环节，一道<strong>平分周长</strong>的问题，后来磕磕绊绊写出来了。</p>
+<p>之后就是面试题目，不得不说飞书的面试不怎么考高频的面试题，比如一般 TCP 大家都会问<strong>三次握手</strong>和<strong>四次挥手</strong>，但是面试官问的是<strong>滑动窗口</strong>。当然也问到了数据库的问题，这个是之前面试没有问过的。</p>
+<p>反问环节给我的反馈也是多去练习，代码可复用性不强。</p>
+<h3 id="二面-1"><a href="#二面-1" class="headerlink" title="二面"></a>二面</h3><p>三天后收到了二面通知，同样是视频面试。</p>
+<p>还是喜闻乐见的做题环节，第一道题目就是要写一个 <strong>Retry 的装饰器</strong>，不会，只写了装饰器的模板。</p>
+<p>第二道是<strong>八皇后</strong>问题，上一次看八皇后是两周之前，当时只记得判断条件是 x - y 和 x + y，只和面试官说了这些，实际上代码的实现还是比较简单的，有点可惜。</p>
+<p>后来就问 <strong>Hashset</strong> ，但是那个时候 Python 是主要语言，Java 的确认了解不多，只和面试官说了 Hashmap，这个明显是不过关的。</p>
+<p>于是，就到了反问环节，面试官也很中肯地给出了建议。总结一下，飞书的面试确实不会问高频的面试题目，反而会问些与之相关的问题，这样可以检验对方是刷面经还是真正的学习。</p>
+<p>一天之后转岗到教育业务。</p>
+<h2 id="腾讯"><a href="#腾讯" class="headerlink" title="腾讯"></a>腾讯</h2><p>腾讯的状态很早就变了，但是过了几天才发起了面试通知，听声音感觉面试官年纪不小，态度很好，称谓都是「您」，着实让我震惊。</p>
+<h3 id="一面-3"><a href="#一面-3" class="headerlink" title="一面"></a>一面</h3><p>腾讯没有问算法相关的问题。看到我用 Python 就问了<strong>装饰器</strong>的问题，还有 <strong>HTTP</strong> 的问题，还有<strong>数据库</strong>的问题。最后问了一个<strong>银行转账的余额变化</strong>的问题，之前看过用 Python 多线程实现火车余票查询的问题，于是就答了线程和锁，但是面试官不是特别满意，所以就说了<strong>乐观锁</strong>。</p>
+<p>值得一提的是面试官问的问题很泛，并不会问具体的一个问题，所以我回答的也会比较多一些。面试官边听我的回答边会在黑板上记录。而且，有些问题我不知道，面试官也不会深究。</p>
+<hr>
+<p>之前学 TOEFL 的时候，口语老师津津乐道的故事就是一个学生没有报班，而是报了十几次考试，从 20 分考到了 70 分。</p>
+<p>这段经历也是十分有趣，有给予我帮助的朋友们，也有对我提出批评的朋友。总的来说是对我有帮助的，这样我可以更好的查漏补缺，为自己秋招做好完善的准备。</p>
+<p>最后还是要更加努力地去刻意练习算法题，更要去完善自己不熟悉的<strong>数据库</strong>和 <strong>Java</strong> 的知识。</p>
+<hr>
+<p>最后，和大家分享一下我的学习资料：</p>
+<ol>
+<li><p><a href="https://github.com/CyC2018/CS-Notes" target="_blank" rel="noopener">CS-Notes</a></p>
+<p>这是一名字节跳动拿到 SSP 的前辈总结的知识，每一个知识点都很详细，但是两年过去了，很多新的知识需要自己补充，但是用来查漏补缺也是很不错的。</p>
+</li>
+<li><p><a href="https://time.geekbang.org/column/intro/126" target="_blank" rel="noopener">数据结构与算法之美</a></p>
+<p>如果只能推荐一个 APP 的话，那我只推荐<strong>极客时间</strong>，学生也有半价优惠。其中很多基础知识点都会用在工程中的实例来表现，能够更好地理解。</p>
+</li>
+<li><p><a href="https://time.geekbang.org/column/intro/82" target="_blank" rel="noopener">Java核心技术面试精讲</a></p>
+<p>这个不多说了，太多高频考点了，看这个我感觉甚至有作弊的嫌疑。</p>
+</li>
+<li><p><a href="https://www.shiyanlou.com/" target="_blank" rel="noopener">实验楼</a></p>
+<p>实践项目的利器，不用费心去搭建环境，能够更专注于其本身的实现。</p>
+</li>
+<li><p><a href="https://github.com/labuladong/fucking-algorithm" target="_blank" rel="noopener">fucking-algorithm</a></p>
+<p>作者是 LeetCode 中文站的高票答主，总结了很多同类算法题目的通用解法，非常适合刷很多题目的朋友建立框架。</p>
+</li>
+</ol>
+<hr>
+<script type="math/tex; mode=display">
+To\ Be\ Continued...</script>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 面经</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 计算机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/19/%E6%9D%82%E8%AE%B0/%E7%96%AB%E6%83%85/" rel="prev" title="面对「疫情」，我们或许可以先做这些事">
+      <i class="fa fa-chevron-left"></i> 面对「疫情」，我们或许可以先做这些事
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里搜索推荐中台"><span class="nav-number">1.</span> <span class="nav-text">阿里搜索推荐中台</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一面"><span class="nav-number">1.1.</span> <span class="nav-text">一面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二面"><span class="nav-number">1.2.</span> <span class="nav-text">二面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#钉钉"><span class="nav-number">2.</span> <span class="nav-text">钉钉</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一面-1"><span class="nav-number">2.1.</span> <span class="nav-text">一面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#飞书"><span class="nav-number">3.</span> <span class="nav-text">飞书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一面-2"><span class="nav-number">3.1.</span> <span class="nav-text">一面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二面-1"><span class="nav-number">3.2.</span> <span class="nav-text">二面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#腾讯"><span class="nav-number">4.</span> <span class="nav-text">腾讯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一面-3"><span class="nav-number">4.1.</span> <span class="nav-text">一面</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brikarl"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Brikarl</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Brikarl" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Brikarl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/yunkai@buaa.edu.cn" title="E-Mail → yunkai@buaa.edu.cn"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.douban.com/people/141831176/" title="豆瓣 → https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;141831176&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-custom douban"></i>豆瓣</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/33396353" title="B站 → https:&#x2F;&#x2F;space.bilibili.com&#x2F;33396353" rel="noopener" target="_blank"><i class="fa fa-fw fa-custom bilibili"></i>B站</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/bo-yun-kai-92" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;bo-yun-kai-92" rel="noopener" target="_blank"><i class="fa fa-fw fa-custom zhihu"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/brikarl96" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;brikarl96" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brikarl</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">46k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">42 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
