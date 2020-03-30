@@ -47,28 +47,32 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="吸口好时光">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
+  <meta name="description" content="本文是刷「剑指 Offer（第 2 版）」的个人记录，有每道题目的个人解法和思考过程，以及一些比较好的题解和分析过程，使用语言为 Python，主要原因是 Python 的语言非常简洁，初学者可以只关注其具体思考与实现的过程而非代码本身，而且 Python 的语法糖也会让整个代码变得异常简洁。未来会加 Java 代码（因为我Java 学的还是不太行）。 面试题03. 数组中重复的数字题目描述找出数">
+<meta name="keywords" content="计算机,算法,刷题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「剑指 Offer（第 2 版）」刷题记录">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;30&#x2F;%E7%AE%97%E6%B3%95&#x2F;%E5%89%91%E6%8C%87%20Offer&#x2F;index.html">
 <meta property="og:site_name" content="吸口好时光">
+<meta property="og:description" content="本文是刷「剑指 Offer（第 2 版）」的个人记录，有每道题目的个人解法和思考过程，以及一些比较好的题解和分析过程，使用语言为 Python，主要原因是 Python 的语言非常简洁，初学者可以只关注其具体思考与实现的过程而非代码本身，而且 Python 的语法糖也会让整个代码变得异常简洁。未来会加 Java 代码（因为我Java 学的还是不太行）。 面试题03. 数组中重复的数字题目描述找出数">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-30T15:36:45.313Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/03/30/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87%20Offer/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>吸口好时光</title>
+  <title>「剑指 Offer（第 2 版）」刷题记录 | 吸口好时光</title>
   
 
 
@@ -206,10 +210,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/30/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87%20Offer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -223,8 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/30/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87%20Offer/" class="post-title-link" itemprop="url">「剑指 Offer（第 2 版）」刷题记录</a>
+          「剑指 Offer（第 2 版）」刷题记录
         </h1>
 
         <div class="post-meta">
@@ -274,7 +277,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文是刷「剑指 Offer（第 2 版）」的个人记录，有每道题目的个人解法和思考过程，以及一些比较好的题解和分析过程，使用语言为 Python，主要原因是 Python 的语言非常简洁，初学者可以只关注其具体思考与实现的过程而非代码本身，而且 Python 的语法糖也会让整个代码变得异常简洁。未来会加 Java 代码（因为我Java 学的还是不太行）。</p>
+        <p>本文是刷「剑指 Offer（第 2 版）」的个人记录，有每道题目的个人解法和思考过程，以及一些比较好的题解和分析过程，使用语言为 Python，主要原因是 Python 的语言非常简洁，初学者可以只关注其具体思考与实现的过程而非代码本身，而且 Python 的语法糖也会让整个代码变得异常简洁。未来会加 Java 代码（因为我Java 学的还是不太行）。</p>
 <h2 id="面试题03-数组中重复的数字"><a href="#面试题03-数组中重复的数字" class="headerlink" title="面试题03. 数组中重复的数字"></a><a href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/" target="_blank" rel="noopener">面试题03. 数组中重复的数字</a></h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>找出数组中重复的数字。</p>
 <p>在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。</p>
 <p><strong>示例 1：</strong></p>
@@ -355,947 +358,39 @@
 <hr>
 <script type="math/tex; mode=display">
 To\ Be\ Continued\ ...</script>
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/" class="post-title-link" itemprop="url">材料人转行互联网的春招面经</a>
-        </h1>
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 计算机</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 算法</a>
+              <a href="/tags/%E5%88%B7%E9%A2%98/" rel="tag"><i class="fa fa-tag"></i> <i class="fa fa-tag"></i> 刷题</a>
+          </div>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-28 11:54:13" itemprop="dateCreated datePublished" datetime="2020-03-28T11:54:13+08:00">2020-03-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-29 23:37:42" itemprop="dateModified" datetime="2020-03-29T23:37:42+08:00">2020-03-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">杂记</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>大家好呀。</p>
-<p>受疫情的影响，今年的「金三银四」总有些和往年的不同，几乎所有的面试都转为视频和电话面试。我也通过过去半年的学习，一边投递互联网开发岗位，一边继续学习新的知识。接下来就说一下最近这一个月的面试过程，也算是对自己学习的复盘。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/28/%E6%9D%82%E8%AE%B0/%E6%98%A5%E6%8B%9B%E9%9D%A2%E7%BB%8F/" rel="prev" title="材料人转行互联网的春招面经">
+      <i class="fa fa-chevron-left"></i> 材料人转行互联网的春招面经
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/19/%E6%9D%82%E8%AE%B0/%E7%96%AB%E6%83%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/19/%E6%9D%82%E8%AE%B0/%E7%96%AB%E6%83%85/" class="post-title-link" itemprop="url">面对「疫情」，我们或许可以先做这些事</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-02-19 11:54:13 / 修改时间：15:25:36" itemprop="dateCreated datePublished" datetime="2020-02-19T11:54:13+08:00">2020-02-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">杂记</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img src="/2020/02/19/%E6%9D%82%E8%AE%B0/%E7%96%AB%E6%83%85/1.jpg" class=""> 
-<p>大家好呀，好久不见。</p>
-<p>上班的朋友都复工了嘛？无法返校的同学看文献了嘛？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/19/%E6%9D%82%E8%AE%B0/%E7%96%AB%E6%83%85/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/17/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/4%20%E7%BA%BF%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/17/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/4%20%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">4 线程</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-17 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-17T13:53:53+08:00">2020-02-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-18 22:54:03" itemprop="dateModified" datetime="2020-02-18T22:54:03+08:00">2020-02-18</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们介绍了<strong>内存管理</strong>的相关知识，了解了操作系统是如何让每个进程「独享」 内存空间的。</p>
-<p>这一章我们来介绍操作系统的<strong>线程</strong>知识，在实际过程中，多个线程可能要共同访问同一段空间，如何让他们彼此协调工作，就是我们这一章讨论的话题。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/17/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/4%20%E7%BA%BF%E7%A8%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">3 内存管理</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-14 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-14T13:53:53+08:00">2020-02-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-15 22:09:14" itemprop="dateModified" datetime="2020-02-15T22:09:14+08:00">2020-02-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们介绍了<strong>进程</strong>的相关知识，了解了操作系统是如何让每个进程「独享」 CPU  的。</p>
-<p>这一章我们继续操作系统<strong>虚拟性</strong>的介绍，介绍<strong>内存管理</strong>，将会从<strong>物理内存</strong>开始，介绍其<strong>连续</strong>与<strong>非连续</strong>的存储方式，继而介绍<strong>虚拟内存</strong>，看看内存是如何让进程「共享」内存空间的。</p>
-<p>这部分内容与国内的教材顺序有所不同，国内大部分是将这一章作为线程，且对线程与进程的区分比较模糊。个人认为这样不利于初学者区分进程与线程。这里推荐威斯康星大学计算机科学教授雷姆兹和安德莉亚夫妇编写的<a href="https://book.douban.com/subject/33463930/" target="_blank" rel="noopener">「操作系统导论」</a>（Operating Systems: Three Easy Pieces），以及以此书为参考教材的课程：清华大学<a href="http://www.xuetangx.com/courses/course-v1:TsinghuaX+30240243X+sp/about" target="_blank" rel="noopener">「操作系统」</a>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/" class="post-title-link" itemprop="url">2 进程</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-07 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-07T13:53:53+08:00">2020-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-11 13:17:27" itemprop="dateModified" datetime="2020-02-11T13:17:27+08:00">2020-02-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们介绍了操作系统的基本概念以及特性，补充了些在<strong>组成原理</strong>中未涉及的内容。</p>
-<p>接下来两章我们会从<strong>虚拟性</strong>出发，去分别介绍<strong>进程</strong>（ CPU 虚拟）和<strong>内存管理</strong>（内存虚拟）。这一章先介绍进程的基本概念以及进程的<strong>调度算法</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/2%20%E8%BF%9B%E7%A8%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" class="post-title-link" itemprop="url">1 操作系统概述</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-06 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-06T13:53:53+08:00">2020-02-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-07 14:40:00" itemprop="dateModified" datetime="2020-02-07T14:40:00+08:00">2020-02-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前我们介绍了计算机的<strong>组成原理</strong>，从今天开始，我们要开始介绍计算机的<strong>操作系统</strong>。操作系统作为用户与硬件之间最重要的枢纽，有着非常重要的意义。</p>
-<p>本章将带来操作系统的基本概念、功能特性、发展历史以及体系结构，也会补充些硬件方面的知识，完善知识结构。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/1%20%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/" class="post-title-link" itemprop="url">5 存储器</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-03 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-03T13:53:53+08:00">2020-02-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-04 16:35:34" itemprop="dateModified" datetime="2020-02-04T16:35:34+08:00">2020-02-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index">
-                    <span itemprop="name">组成原理</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们介绍计算机中<strong>流水线指令系统设计</strong>，介绍一下计算机如何<strong>「更快」</strong>地执行，也会介绍如何去解决流水线处理器中的<strong>冒险</strong>。</p>
-<p>这一章会为大家介绍计算机中各式各样的<strong>存储器</strong>，重点介绍<strong>高速缓存</strong>的工作原理。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/03/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/5%20%E5%86%85%E5%AD%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/" class="post-title-link" itemprop="url">4 流水线指令设计</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-02 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-02T13:53:53+08:00">2020-02-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-04 14:18:06" itemprop="dateModified" datetime="2020-02-04T14:18:06+08:00">2020-02-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index">
-                    <span itemprop="name">组成原理</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们计算机中的指令系统，重点介绍了传送指令、流程控制和过程调用，了解了在高级语言如何转化为汇编语言来指导计算机工作。</p>
-<p>这一章会为大家介绍计算机中<strong>流水线指令系统设计</strong>，介绍一下计算机如何<strong>「更快」</strong>地执行，也会介绍如何去解决流水线处理器中的<strong>冒险</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/02/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/4%20%E6%B5%81%E6%B0%B4%E7%BA%BF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/01/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Brikarl">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="吸口好时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/01/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">3 指令系统</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-01 13:53:53" itemprop="dateCreated datePublished" datetime="2020-02-01T13:53:53+08:00">2020-02-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-04 14:17:56" itemprop="dateModified" datetime="2020-02-04T14:17:56+08:00">2020-02-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index">
-                    <span itemprop="name">组成原理</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一章我们介绍了计算机中信息的表示，重点介绍了浮点数和补码。</p>
-<p>这一章会为大家介绍计算机中<strong>指令系统</strong>，重点介绍<strong>汇编语言</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/01/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/3%20%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
   </article>
   
   
   
 
   </div>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
 
 
           </div>
@@ -1324,6 +419,7 @@ To\ Be\ Continued\ ...</script>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题03-数组中重复的数字"><span class="nav-number">1.</span> <span class="nav-text">面试题03. 数组中重复的数字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述"><span class="nav-number">1.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路"><span class="nav-number">1.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解"><span class="nav-number">1.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题04-二维数组中的查找"><span class="nav-number">2.</span> <span class="nav-text">面试题04. 二维数组中的查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-1"><span class="nav-number">2.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-1"><span class="nav-number">2.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题05-替换空格"><span class="nav-number">3.</span> <span class="nav-text">面试题05. 替换空格</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-2"><span class="nav-number">3.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-2"><span class="nav-number">3.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-2"><span class="nav-number">3.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题06-从尾到头打印链表"><span class="nav-number">4.</span> <span class="nav-text">面试题06. 从尾到头打印链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-3"><span class="nav-number">4.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-3"><span class="nav-number">4.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-3"><span class="nav-number">4.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题07-重建二叉树"><span class="nav-number">5.</span> <span class="nav-text">面试题07. 重建二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-4"><span class="nav-number">5.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-4"><span class="nav-number">5.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-4"><span class="nav-number">5.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题09-用两个栈实现队列"><span class="nav-number">6.</span> <span class="nav-text">面试题09. 用两个栈实现队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-5"><span class="nav-number">6.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-5"><span class="nav-number">6.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-5"><span class="nav-number">6.3.</span> <span class="nav-text">官方题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题10-I-斐波那契数列"><span class="nav-number">7.</span> <span class="nav-text">面试题10- I. 斐波那契数列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-6"><span class="nav-number">7.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人思路-6"><span class="nav-number">7.2.</span> <span class="nav-text">个人思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方题解-6"><span class="nav-number">7.3.</span> <span class="nav-text">官方题解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#迭代"><span class="nav-number">7.3.1.</span> <span class="nav-text">迭代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用备忘录递归"><span class="nav-number">7.3.2.</span> <span class="nav-text">使用备忘录递归</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
