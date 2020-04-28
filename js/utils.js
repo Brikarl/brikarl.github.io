@@ -49,7 +49,7 @@ NexT.utils = {
       element.addEventListener('click', event => {
         var exturl = event.currentTarget.getAttribute('data-url');
         var decurl = decodeURIComponent(escape(window.atob(exturl)));
-        window.open(decurl, '_blank', 'noopener');
+        window.open(decurl, '_self', 'noopener');
         return false;
       });
     });
